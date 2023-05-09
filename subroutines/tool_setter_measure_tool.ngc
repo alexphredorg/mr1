@@ -1,0 +1,76 @@
+(Assumptions:)
+( * tool_setter_calibrate has been run)
+( * Probe is in the tool spindle )
+( * Tool setter X/Y are in setup )
+( * Z zero in this coordinate system is set relative to the workpiece )
+
+( Operations: )
+( Retract to safe Z height )
+( Move to tool setter X/Y )
+( Probing operation to find top of tool setter relative to workpiece )
+( Save's tool setter offset in #3800 + #coordinatesystem.  ie, #3801 for G54)
+
+o<tool_setter_measure_tool> sub
+
+#<fast_probe_fr> = #<_ini[toolsetter]probe_fast_speed>
+#<slow_probe_fr> = #<_ini[toolsetter]probe_slow_speed>
+#<z_max_travel> = #<_ini[toolsetter]max_probe>
+#<retract_distance> = #<_ini[toolsetter]retract_distance>
+#<tool_setter_x> = #<_ini[toolsetter]x>
+#<tool_setter_y> = #<_ini[toolsetter]y>
+#<tool_setter_z> = #<_ini[toolsetter]z>
+
+( tool setter X/Y come from G30 touch off position, set with set_g30_position.ngc )
+
+( load tool setter coordinates from G30 )
+( #<tool_touch_x_coords> = #5181 )
+( #<tool_touch_y_coords> = #5182 )
+
+( This was set by tool_setter_calibrate and is the Z difference between the )
+( workpiece and the tool setter )
+#<probe_z_offset> = #[3800 + #5220]
+
+o110 if [#<probe_z_offset> EQ 0]
+    (MSG, Run tool_setter_calibration.ngc first)
+    o<tool_setter_measure_tool> return
+o110 endif
+
+G92.1       ( Cancel G92 offset )
+G49         ( cancel tool offsets )
+
+( move to above tool setter)
+G90 (absolute coordinates)
+G53 G0 Z#<tool_setter_z>
+G53 G0 X#<tool_setter_x> Y#<tool_setter_y>
+
+G91 (relative coordinates)
+F #<fast_probe_fr>
+G38.2 Z[#<z_max_travel>]    (fast tool probe down Z)
+G0 Z[#<retract_distance>]    (retract tool retract distance amount)
+
+(Slow Probe Rule, if Slow Probe FR is set to 0, Slow Probe is Bypassed)
+o120 if [#<slow_probe_fr> GT 0]
+    (Initiate Slow Z- Probe)
+    F[#<slow_probe_fr>]                 (set probe slow feedrate)
+    G38.2 Z-[#<retract_distance> * 2]   (slow tool probe)
+    (debug, Probed Pos: #5063 Z Pos: #<_z>)
+    G0 Z[#<retract_distance>]           (retract tool retract distance amount)
+o120 endif
+
+o130 if [#5070 EQ 1]    (verify probe event was succesful)
+    #<zoffset> = #5063    (save slow probe result to parameters)
+o130 else
+    (MSG,Tool Setter Calibration Probe Failed)
+o130 endif
+
+#<_tool_z_offset> = [#<probe_z_offset> - #<zoffset>]
+(Debug, zoffset=#<zoffset> probe_z_offset=#<probe_z_offset>)
+(Debug, Tool length offset is #<_tool_z_offset>)
+
+G90                         ( Absolute coordinates )
+G53 G0 Z0                   ( Send Spindle to home zero position )
+G43.1 Z-#<_tool_z_offset>     ( set tool offset )
+
+o<tool_setter_measure_tool> endsub
+
+M2 (end program)
