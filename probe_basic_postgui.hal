@@ -1,21 +1,16 @@
 loadrt time
-#loadrt not
-
 addf time.0 servo-thread
-#addf not.0 servo-thread
 
-
-# z tool offset
+# expose z tool offset to qtpyvcp
 setp qtpyvcp.tool-offset-z.enable true
 net tool-offset-z qtpyvcp.tool-offset-z.in <= halui.tool.length_offset.z
+
+setp qtpyvcp.current-tool.enable true
+net qt-current-tool qtpyvcp.current-tool.in <= halui.tool.number
 
 net prog-running not.1.in <= halui.program.is-idle
 net prog-paused halui.program.is-paused => time.0.pause
 net cycle-timer time.0.start <= not.1.out
-#net cycle-seconds qtpyvcp.timerseconds.in <= time.0.seconds
-#net cycle-minutes qtpyvcp.timerminutes.in <= time.0.minutes
-#net cycle-hours qtpyvcp.timerhours.in <= time.0.hours
-# *** Time items required for Probe Basic to run ***
 
 # *** Probe graphic simulation trigger push probe tip ***
 net probe-in  =>  qtpyvcp.probe-in.out
@@ -23,7 +18,6 @@ net probe-in  =>  qtpyvcp.probe-in.out
 # *** Set line below for actual spindle readout from your hal file ***
 #net spindle-rpm-filtered scale_to_rpm.out  =>  qtpyvcp.spindle-encoder-rpm.in
 net spindle-fb-rpm-abs-filtered =>  qtpyvcp.spindle-encoder-rpm.in
-
 
 # *** set below for the status leds ***
 #net enter-hal-input-name-here  <=  qtpyvcp.1in1.on

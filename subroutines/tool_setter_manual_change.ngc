@@ -1,0 +1,58 @@
+; manual tool change script
+; operations:
+;   1. nop if the same tool is being loaded again
+;   2. if probe is loaded now then run calibrate to measure the probe length
+;   3. move spindle to where the user can reach it
+;   4. change the tool
+;   5. measure new tool
+; returns: positive on success, negative on failure
+;   
+
+o<tool_setter_manual_change> sub
+	( load configuration from ini )
+	#<tool_change_x> = #<_ini[toolchange]x>
+	#<tool_change_y> = #<_ini[toolchange]y>
+	#<tool_change_z> = #<_ini[toolchange]z>
+	#<probe_tool_number> = #<_ini[toolchange]probe_tool_number>
+	#<empty_tool_number> = #<_ini[toolchange]empty_tool_number>
+	#<old_tool> = #<_current_tool>
+	#<new_tool> = #<_selected_tool>
+
+	M70 								( save state ) 
+	M9									( coolant off )
+	M5									( spindle off )
+
+	( if the currently loaded tool is the probe then record it's height )
+	o100 if [#<old_tool> EQ #<probe_tool_number>]
+		o<tool_setter_calibrate> call
+		o101 if [#<_value> LT 0]
+			;(DEBUG, tool_setter_calibrate returned #<_value>)
+			o<tool_setter_manual_change> return [#<_value>]
+		o101 endif	
+	o100 endif
+
+	( do the tool change only if tool number has changed)
+	o110 if [#<old_tool> NE #<new_tool>]
+		( move to changing location)
+		G90								( absolute coordinates )
+		G53 G0 Z#<tool_change_z>
+		G53 G0 X#<tool_change_x> Y#<tool_change_y>
+		M6								( standard tool change )
+	o110 endif
+
+	( measure the tool unless it is the probe or spindle is empty )
+	#<_tool_z_offset> = 0
+	o120 if [[#<new_tool> NE #<probe_tool_number>] AND [#<new_tool> NE #<empty_tool_number>]]
+		o<tool_setter_measure_tool> call
+		o121 if [#<_value> LT 0]
+			(DEBUG, tool_setter_measure_tool returned #<_value>)
+			o<tool_setter_manual_change> return [#<_value>]
+		o121 endif	
+	o120 endif
+
+	M72									( restore state )
+
+	G43.1 Z-#<_tool_z_offset>   		( set tool offset )
+o<tool_setter_manual_change> endsub [1]
+
+M2

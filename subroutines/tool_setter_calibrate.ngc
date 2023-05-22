@@ -9,62 +9,66 @@
 ( Probing operation to find top of tool setter relative to workpiece )
 ( Save's tool setter offset in #3800 + #coordinatesystem.  ie, #3801 for G54)
 
+( returns positive == success, negative == failure )
+
 o<tool_setter_calibrate> sub
+	#<fast_probe_fr> = #<_ini[toolsetter]probe_fast_speed>
+	#<slow_probe_fr> = #<_ini[toolsetter]probe_slow_speed>
+	#<z_max_travel> = #<_ini[toolsetter]max_probe>
+	#<retract_distance> = #<_ini[toolsetter]retract_distance>
+	#<tool_setter_x> = #<_ini[toolsetter]x>
+	#<tool_setter_y> = #<_ini[toolsetter]y>
+	#<tool_setter_z> = #<_ini[toolsetter]z>
 
-#<fast_probe_fr> = #<_ini[toolsetter]probe_fast_speed>
-#<slow_probe_fr> = #<_ini[toolsetter]probe_slow_speed>
-#<z_max_travel> = #<_ini[toolsetter]max_probe>
-#<retract_distance> = #<_ini[toolsetter]retract_distance>
-#<tool_setter_x> = #<_ini[toolsetter]x>
-#<tool_setter_y> = #<_ini[toolsetter]y>
-#<tool_setter_z> = #<_ini[toolsetter]z>
+	( tool setter X/Y come from G30 touch off position, set with set_g30_position.ngc )
 
-( tool setter X/Y come from G30 touch off position, set with set_g30_position.ngc )
+	M70
+	G92.1    (Cancel G92 offset)
 
-G92.1    (Cancel G92 offset)
+	( load tool setter coordinates from G30 )
+	( #<tool_touch_x_coords> = #5181 )
+	( #<tool_touch_y_coords> = #5182 )
 
-( load tool setter coordinates from G30 )
-( #<tool_touch_x_coords> = #5181 )
-( #<tool_touch_y_coords> = #5182 )
+	( G59.3 ) (not sure why this was used the original script)
 
-( G59.3 ) (not sure why this was used the original script)
+	G90 									(absolute coordinates)
+	G53 G0 Z#<tool_setter_z>				(move to above tool setter)
+	G53 G0 X#<tool_setter_x> Y#<tool_setter_y>
 
-( move to above tool setter)
-G90 (absolute coordinates)
-G53 G0 Z#<tool_setter_z>
-G53 G0 X#<tool_setter_x> Y#<tool_setter_y>
+	G91 									(relative coordinates)
+	F[#<fast_probe_fr>]
+	G38.2 Z[#<z_max_travel>]    			(fast tool probe down Z)
+	G0 Z[#<retract_distance>]    			(retract tool retract distance amount)
 
-G91 (relative coordinates)
-F #<fast_probe_fr>
-G38.2 Z[#<z_max_travel>]    (fast tool probe down Z)
-G0 Z[#<retract_distance>]    (retract tool retract distance amount)
+	(Slow Probe Rule, if Slow Probe FR is set to 0, Slow Probe is Bypassed)
+	o120 if [#<slow_probe_fr> GT 0]
+											(Initiate Slow Z- Probe)
+		F[#<slow_probe_fr>]                 (set probe slow feedrate)
+		G38.2 Z-[#<retract_distance> * 2]   (slow tool probe)
+		G0 Z[#<retract_distance>]           (retract tool retract distance amount)
+	o120 endif
 
-(Slow Probe Rule, if Slow Probe FR is set to 0, Slow Probe is Bypassed)
-o120 if [#<slow_probe_fr> GT 0]
-    (Initiate Slow Z- Probe)
-    F[#<slow_probe_fr>]                 (set probe slow feedrate)
-    G38.2 Z-[#<retract_distance> * 2]   (slow tool probe)
-    (debug, Probed Pos: #5063 Z Pos: #<_z>)
-    G0 Z[#<retract_distance>]           (retract tool retract distance amount)
-o120 endif
+	o130 if [#5070 EQ 1]    				(verify probe event was succesful)
+		#<zoffset> = #5063    				(save slow probe result to parameters)
+	o130 else
+		(MSG,Tool Setter Calibration Probe Failed)
+		o<tool_setter_calibrate> return [-1]
+	o130 endif
 
-o130 if [#5070 EQ 1]    (verify probe event was succesful)
-    #<zoffset> = #5063    (save slow probe result to parameters)
-o130 else
-    (MSG,Tool Setter Calibration Probe Failed)
-o130 endif
+	G90         							(absolute coordinates)
+	G53 G0 Z0   							(Send Spindle to home zero position)
+	M72
 
-G90         (absolute coordinates)
-G53 G0 Z0   (Send Spindle to home zero position)
+	( Store height difference between workpiece and tool setter in #3800 )
+	( range.  This will use #3801 for G54, #3802 for G55, etc)
+	( #3800 is set to a cookie value to verify that this script ran )
+	#[3800 + #5220] = #<zoffset>
 
-( Store height difference between workpiece and tool setter in #3800 )
-( range.  This will use #3801 for G54, #3802 for G55, etc)
-( #3800 is set to a cookie value to verify that this script ran )
-#[3800 + #5220] = #<zoffset>
+	;( DEBUG, Probe Z offset = #<zoffset> )
 
-( Update the UI ) 
-( #<_hal[qtpyvcp.work-offset-z.in]> = #<zoffset> )
+	( Update the UI ) 
+	( #<_hal[qtpyvcp.work-offset-z.in]> = #<zoffset> )
 
-o<tool_setter_calibrate> endsub
+o<tool_setter_calibrate> endsub [1]
 
 M2 (end program)

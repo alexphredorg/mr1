@@ -1,0 +1,11 @@
+o<on_abort> sub
+
+M5
+M9
+G90
+G40
+G49
+
+o<on_abort> endsub
+m2
+%
