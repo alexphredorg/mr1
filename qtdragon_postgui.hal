@@ -1,0 +1,11 @@
+
+# manual tool change
+net tool-change      		hal_manualtoolchange.change   <=  iocontrol.0.tool-change
+net tool-changed     		hal_manualtoolchange.changed  <=  iocontrol.0.tool-changed
+net tool-prep-number 		hal_manualtoolchange.number   <=  iocontrol.0.tool-prep-number
+net tool-prepare-loopback 	iocontrol.0.tool-prepare      => iocontrol.0.tool-prepared
+
+# probe LED
+net probe-in  =>  qtdragon.led-probe
+
+

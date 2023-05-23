@@ -1,0 +1,52 @@
+o<warm_up_mr1> sub
+	; make sure there isn't a tool loaded
+	T0 M6
+
+	; absolute mode
+	G90
+
+	; go to top of Z
+	G53 G0 Z0
+
+	; go to middle of machine
+	G53 G0 X12 Y12
+
+	#<speed> = 1000 
+	#<speed_incr> = 1000
+	#<feed> = 20
+	#<feed_incr> = 20
+	#<loops> = 1
+
+	; incremental mode
+	G91
+
+	; loop over warmup routine
+	o101 while [#<speed> LE 8000]
+		M3 S#<speed>
+		#<iteration> = 0
+		o102 while [#<iteration> LT #<loops>]
+			G1 Z-2 F#<feed>	
+			G1 Z2 F#<feed>
+			G1 Y-4 F#<feed>	
+			G1 Y4 F#<feed>
+			G1 X-4 F#<feed>	
+			G1 X4 F#<feed>
+			#<iteration> = [#<iteration> + 1]
+		o102 endwhile
+		#<speed> = [#<speed> + #<speed_incr>]
+		#<feed> = [#<feed> + #<feed_incr>]	
+		#<loops> = [#<loops> + 0.5]
+		;G04 P20
+	o101 endwhile
+
+	S4000
+	G04 P20
+	S2000
+	G04 P20
+	S1000
+	G04 P20
+
+	M5
+o<warm_up_mr1> endsub [1]
+
+M2 (end program)

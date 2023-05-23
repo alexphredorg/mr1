@@ -1,0 +1,157 @@
+[DIALOG_GEOMETRY]
+AboutDialog-geometry = 910 539 300 150
+LncMessage-geometry = 910 539 280 102
+ToolChangeDialog-geometry = 910 539 340 237
+CalculatorDialog-geometry = 910 539 472 376
+_CALCULATOR = 910 539 472 376
+
+[DIALOG_OPTIONS]
+EntryDialog_play_sound = True
+EntryDialog_sound_type = READY
+toolDialog_play_sound = True
+toolDialog_speak = True
+toolDialog_sound_type = READY
+fileDialog_play_sound = True
+fileDialog_sound_type = READY
+CalculatorDialog_play_sound = True
+CalculatorDialog_sound_type = READY
+MachineLogDialog_play_sound = True
+MachineLogDialog_sound_type = READY
+RunFromLineDialog_play_sound = True
+RunFromLineDialog_sound_type = READY
+
+[BOOK_KEEPING]
+last_loaded_directory = /home/cnc/linuxcnc/configs/mr1/subroutines
+last_loaded_file = /home/cnc/linuxcnc/configs/mr1/subroutines/warm_up_mr1.ngc
+style_QSS_Path = DEFAULT
+
+[ORIGINOFFSET_SYSTEM_NAMES]
+__dialogOffsetViewWidget-G54 = User System 1
+__dialogOffsetViewWidget-G55 = User System 2
+__dialogOffsetViewWidget-G56 = User System 3
+__dialogOffsetViewWidget-G57 = User System 4
+__dialogOffsetViewWidget-G58 = User System 5
+__dialogOffsetViewWidget-G59 = User System 6
+__dialogOffsetViewWidget-G59.1 = User System 7
+__dialogOffsetViewWidget-G59.2 = User System 8
+__dialogOffsetViewWidget-G59.3 = User System 9
+offset_table-G54 = User System 1
+offset_table-G55 = User System 2
+offset_table-G56 = User System 3
+offset_table-G57 = User System 4
+offset_table-G58 = User System 5
+offset_table-G59 = User System 6
+offset_table-G59.1 = User System 7
+offset_table-G59.2 = User System 8
+offset_table-G59.3 = User System 9
+
+[SCREEN_OPTIONS]
+catch_errors = True
+desktop_notify = True
+notify_max_msgs = 10
+shutdown_check = True
+sound_player_on = False
+mainwindow_geometry = 0 27 1920 1080
+MainWindow-geometry = 0 27 1920 1080
+
+[MCH_MSG_OPTIONS]
+mchnMsg_play_sound = True
+mchnMsg_speak_errors = False
+mchnMsg_speak_text = True
+mchnMsg_sound_type = ATTENTION
+
+[USR_MSG_OPTIONS]
+usermsg_play_sound = True
+userMsg_sound_type = ATTENTION
+userMsg_use_focusOverlay = True
+
+[SHUTDOWN_OPTIONS]
+shutdown_play_sound = True
+shutdown_alert_sound_type = READY
+shutdown_exit_sound_type = LOGOUT
+shutdown_msg_title = Do you want to Shutdown now?
+shutdown_msg_focus_text = 
+shutdown_msg_detail = 
+
+[NOTIFY_OPTIONS]
+notify_start_greeting = False
+notify_start_title = Welcome
+notify_start_detail = This option can be changed in the preference file
+notify_start_timeout = 5
+
+[FILEMANAGER_JUMPLIST]
+
+[SCREEN_CONTROL_LAST_SETTING]
+gcodegraphics-user-view = p
+gcodegraphics-user-zoom = 10.0
+gcodegraphics-user-panx = 0.0
+gcodegraphics-user-pany = 0.0
+gcodegraphics-user-lat = 0.0
+gcodegraphics-user-lon = 0.0
+
+[CUSTOM_FORM_ENTRIES]
+Tool to load = 0
+Laser X = 100.0
+Laser Y = -20.0
+Sensor X = 19.4
+Sensor Y = 19.46
+Camera X = 10.0
+Camera Y = 10.0
+Work Height = 20.0
+Touch Height = 40.0
+Sensor Height = 40.0
+Search Velocity = 20.0
+Probe Velocity = 2.0
+Max Probe = 6.0
+Retract Distance = 0.05
+Z Safe Travel = 0.0
+Eoffset count = 0.0
+External offsets = False
+Reload program = False
+Reload tool = True
+Use keyboard = True
+Run from line = False
+Use virtual keyboard = False
+Use tool sensor = True
+Use camera = False
+Use alpha display mode = False
+Inhibit display mouse selection = True
+Use tool touchplate = False
+
+[PROBE OPTIONS]
+Probe tool = 99
+Probe diameter = .125
+Probe rapid = 10
+Probe feed = 10
+Probe search = 10
+Probe max travel = 1
+Probe max z = 1
+Probe extra depth = 0
+Probe step off = 0.5
+Probe xy clearance = 0.5
+Probe z clearance = 0.5
+Probe edge width = 0
+Calibration offset = 0
+Cal x width = 0
+Cal y width = 0
+Cal diameter = 0
+
+[VERSA_PROBE_OPTIONS]
+ps_searchvel = 20.0
+ps_probevel = 2.0
+ps_z_clearance = 0.1
+ps_probe_max = 0.5
+ps_probe_latch = 0.05
+ps_probe_diam = 0.125
+ps_xy_clearance = 0.5
+ps_side_edge_length = 0.5
+ps_probe_height = 20.0
+ps_block_height = 20.0
+use_tool_measurement = False
+ps_offs_x = 0.0
+ps_offs_y = 0.0
+ps_offs_z = 0.0
+ps_offs_angle = 0.0
+ps_probe_rapid_vel = 180.0
+ps_probe_max_z_travel = 0.5
+
