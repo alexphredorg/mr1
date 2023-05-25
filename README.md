@@ -20,5 +20,16 @@ LinuxCNC on Debian 12 installation steps:
 
 Consider pulling the latest LinuxCNC drops from http://buildbot2.highlab.com/debian/dists/bookworm/2.9-uspace/
 
+I'm using LinuxCNC's qtDragon as my core user interface.  It had the right mix of a clean and easy to use design with the 
+functionality that I wanted including good probe screens.  I made some changes to qtDragon made some minor changes to it to 
+better support stock MR-1 hardware.  
+
+With this system I get quicker manual tool changes.  A tool change command in G-Code (Tnn M6) will stop the spindle and 
+coolant, bring the spindle to the front and center and wait for the operator to change the tool.  Once changed they click
+OK on the screen and the tool is automatically measured for length and the program continues.
+
 Screenshots:
 ![Main View window with backplot](screenshots/mainview.png)
+![Large set of probing features](screenshots/probing.png)
+![Tool table and tool changing with automatic length probing](screenshots/tooltable.png)
+![Macros for generating some simple programs](screenshots/macros.png)
