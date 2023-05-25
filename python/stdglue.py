@@ -88,6 +88,7 @@ def change_epilog(self, **words):
         else:
             if self.return_value == -1:
                 message = "Probe command failed during tool change"
+                return INTERP_OK
             else:
                 message = "M6 aborted (return code %.1f)" % (self.return_value)
             self.set_errormsg(message)
