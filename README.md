@@ -31,13 +31,13 @@ With this system I get quicker manual tool changes.  A tool change command in G-
 coolant, bring the spindle to the front and center and wait for the operator to change the tool.  Once changed they click
 OK on the screen and the tool is automatically measured for length and the program continues.
 
-Screenshots:
+## Screenshots
 ![Main View window with backplot](screenshots/mainview.png)
 ![Large set of probing features](screenshots/probing.png)
 ![Tool table and tool changing with automatic length probing](screenshots/tooltable.png)
 ![Macros for generating some simple programs](screenshots/macros.png)
 
-# Wiring Table
+## Wiring Table
 This table contains details on how the MESA 7i96S is wired to the rest of the machine.
 
 | MESA 7i96S |     |              |        | Langmuir MR-1       |         |                         |               |
@@ -118,7 +118,7 @@ This table contains details on how the MESA 7i96S is wired to the rest of the ma
 |            | 23  | OUT5A        |        | Spindle Enable      | DB44-16 |                         | lavender      |
 |            | 24  | OUT5B        |        | Ground              | GND     | from 24V PSU            | black         |
 
-# Wiring Notes
+## Wiring Notes
 DC coloring:
 * Langmuir uses white for DC-, black for DC+ (yes, very confusing!)
 
@@ -154,14 +154,14 @@ Spindle pins:
 *  DB44-31: 24V PSU +
 *  DB44-23: 24V PSU-
 
-# Useful Documentation Links
+## Useful Documentation Links
 * Spindle servo drive: http://data.sah.rs/products/motor-control/servo/manuals/T3a_T3L_manual.pdf
 * Mesa 7i96S: http://www.mesanet.com/pdf/parallel/7i96sman.pdf
 * Small Steppers Drives (TB6600): https://dfimg.dfrobot.com/nobody/wiki/0bcc0b661ce7750ff7d0134bfc3e88b3.pdf and https://forum.linuxcnc.org/16-stepconf-wizard/28553-configuring-tb6600 (85mm mounting distance)
 * Large Stepper Drives (CWD860H): https://cdn.shopify.com/s/files/1/0568/0988/1690/files/CWD860H.pdf (148mm mounting distance)
 * Upgrade Stepper Drives (Leadshine EM542S): https://www.leadshine.com/product-detail/stepper-drive/stepper/EM542S.html (112mm mounting distance)
 
-# Drive Constants
+## Drive Constants
 | Axis | Pitch | Steps per Rev | Steps per Inch |
 |------|-------|---------------|----------------|
 | X    | 5mm   | 1600          | 8128           |
@@ -169,8 +169,8 @@ Spindle pins:
 | Z    | 3mm   | 1600          | 13547          |
 | Spin | N/A   | 5000          | N/A            |
 
-Stock stepper timing: 5000us step, 20000us dir  
-EM542S stepper timing: 3000us step, 10000us dir  
-EM542S stepper configuration: SW1-3: ON-OFF-OFF (3.8A); SW4: OFF; SW5-8: OFF-OFF-ON-ON (1600); SW9-10: ON-ON; SW11: OFF, SW12: OFF; SW13: OFF; SW14: OFF; SW15: OFF; SW16: OFF  
+* Stock stepper timing: 5000us step, 20000us dir  
+* EM542S stepper timing: 3000us step, 10000us dir  
+* EM542S stepper configuration: SW1-3: ON-OFF-OFF (3.8A); SW4: OFF; SW5-8: OFF-OFF-ON-ON (1600); SW9-10: ON-ON; SW11: OFF, SW12: OFF; SW13: OFF; SW14: OFF; SW15: OFF; SW16: OFF  
 
 
