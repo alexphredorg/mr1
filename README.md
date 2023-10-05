@@ -169,8 +169,8 @@ Spindle pins:
 | Z    | 3mm   | 1600          | 13547          |
 | Spin | N/A   | 5000          | N/A            |
 
-Stock stepper timing: 5000us step, 20000us dir
-EM542S stepper timing: 3000us step, 10000us dir
-EM542S stepper configuration: SW1-3: ON-OFF-OFF (3.8A); SW4: OFF; SW5-8: OFF-OFF-ON-ON (1600); SW9-10: ON-ON; SW11: OFF, SW12: OFF; SW13: OFF; SW14: OFF; SW15: OFF; SW16: OFF
+Stock stepper timing: 5000us step, 20000us dir  
+EM542S stepper timing: 3000us step, 10000us dir  
+EM542S stepper configuration: SW1-3: ON-OFF-OFF (3.8A); SW4: OFF; SW5-8: OFF-OFF-ON-ON (1600); SW9-10: ON-ON; SW11: OFF, SW12: OFF; SW13: OFF; SW14: OFF; SW15: OFF; SW16: OFF  
 
 
