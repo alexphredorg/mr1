@@ -12,8 +12,6 @@ EM542S, but the configuration here is compatible with the stock steppers as long
 * Tool changes use probing to set the tool height.  This uses the Langmuir probe and tool setter.  The probe is tool 99 and
 tool length probing is automatic for all tools other than 0 and 99.  When the probe is unloaded it is always measured.
 
-Notes on my conversion can be found at: https://1drv.ms/u/s!AqokoOqNPTKZkpR0nkyh90eFzuL-rw
-
 LinuxCNC on Debian 12 installation steps:
 * This install guide will get Debian 12 + LinuxCNC together and includes useful tips and tricks: https://docs.google.com/document/d/1jeV_4VKzVmOIzbB-ytcgsW2I_PhCm1x7oiw8VcLFdiY/edit
 * mkdir ~/linuxcnc/configs
@@ -172,5 +170,11 @@ Spindle pins:
 * Stock stepper timing: 5000us step, 20000us dir  
 * EM542S stepper timing: 3000us step, 10000us dir  
 * EM542S stepper configuration: SW1-3: ON-OFF-OFF (3.8A); SW4: OFF; SW5-8: OFF-OFF-ON-ON (1600); SW9-10: ON-ON; SW11: OFF, SW12: OFF; SW13: OFF; SW14: OFF; SW15: OFF; SW16: OFF  
+
+## OneNote
+
+My original OneNote from the conversion can be found here: https://1drv.ms/u/s!AqokoOqNPTKZkpR0nkyh90eFzuL-rw  
+
+I've moved useful content into this README.
 
 
