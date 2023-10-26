@@ -5,6 +5,10 @@ My LinuxCNC configuration for the Langmuir MR-1 gantry mill.
 WARNING: This is a work in progress and has only been lightly tested by my own use.  It works for me, but I can't
 make any promisses about the suitability of this configuration and code to operate your machine.
 
+There are two branches here.  The "main" branch has the last working version of this with the stock MR-1 spindle.  It can be
+viewed at https://github.com/alexphredorg/mr1/tree/main. There is also a new branch for the CNCDepot FM30F spindle which can 
+be viewed at https://github.com/alexphredorg/mr1/tree/fm30f.
+
 Notes on the configuration:
 * I'm using the stock spindle (servo) drive, stepper motors and tool probes.  I've upgraded my stepper drives to Leadshine 
 EM542S, but the configuration here is compatible with the stock steppers as long as you slow down the max velocities.

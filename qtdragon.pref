@@ -4,6 +4,7 @@ LncMessage-geometry = 910 539 280 102
 ToolChangeDialog-geometry = 910 539 340 237
 CalculatorDialog-geometry = 910 539 472 376
 _CALCULATOR = 910 539 472 376
+FileDialog-geometry = 663 348 387 171
 
 [DIALOG_OPTIONS]
 EntryDialog_play_sound = True
@@ -22,8 +23,11 @@ RunFromLineDialog_sound_type = READY
 
 [BOOK_KEEPING]
 last_loaded_directory = /home/cnc/linuxcnc/configs/mr1/subroutines
-last_loaded_file = /home/cnc/linuxcnc/configs/mr1/subroutines/warm_up_mr1.ngc
+last_loaded_file = /home/cnc/linuxcnc/configs/mr1/subroutines/tool_setter_manual_change.ngc
 style_QSS_Path = DEFAULT
+RecentPath_0 = /home/cnc/linuxcnc/nc_files/break-in.ngc
+last_saved_directory = /home/cnc/linuxcnc/nc_files
+RecentSavedPath_0 = /home/cnc/linuxcnc/nc_files/empty.ngc
 
 [ORIGINOFFSET_SYSTEM_NAMES]
 __dialogOffsetViewWidget-G54 = User System 1
@@ -90,7 +94,7 @@ gcodegraphics-user-lat = 0.0
 gcodegraphics-user-lon = 0.0
 
 [CUSTOM_FORM_ENTRIES]
-Tool to load = 0
+Tool to load = 26
 Laser X = 100.0
 Laser Y = -20.0
 Sensor X = 19.4
@@ -120,21 +124,21 @@ Use tool touchplate = False
 
 [PROBE OPTIONS]
 Probe tool = 99
-Probe diameter = .125
-Probe rapid = 10
-Probe feed = 10
-Probe search = 10
+Probe diameter = .108
+Probe rapid = 180
+Probe feed = 5
+Probe search = 20
 Probe max travel = 1
 Probe max z = 1
 Probe extra depth = 0
-Probe step off = 0.5
-Probe xy clearance = 0.5
-Probe z clearance = 0.5
-Probe edge width = 0
-Calibration offset = 0
-Cal x width = 0
-Cal y width = 0
-Cal diameter = 0
+Probe step off = 0.25
+Probe xy clearance = 0.25
+Probe z clearance = 0.25
+Probe edge width = 1.7
+Calibration offset = 0.0
+Cal x width = 2
+Cal y width = 3
+Cal diameter = 0.375
 
 [VERSA_PROBE_OPTIONS]
 ps_searchvel = 20.0

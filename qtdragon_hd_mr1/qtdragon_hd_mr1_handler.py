@@ -92,9 +92,9 @@ class HandlerClass:
         self.first_turnon = True
         self.unit_label_list = ["ts_height", "tp_height", "zoffset_units", "max_probe_units", "retract_dist_units", "z_safe_travel_units"]
         self.lineedit_list = ["work_height", "touch_height", "sensor_height", "laser_x", "laser_y",
-                              "sensor_x", "sensor_y", "camera_x", "camera_y",
-                              "search_vel", "probe_vel", "max_probe", "eoffset_count"]
-        self.onoff_list = ["frame_program", "frame_tool", "frame_offsets", "frame_dro", "frame_override"]
+                              "sensor_x", "sensor_y", 
+                              "search_vel", "probe_vel", "max_probe" ]
+        self.onoff_list = ["frame_program", "frame_offsets", "frame_dro", "frame_override"]
         self.axis_a_list = ["label_axis_a", "dro_axis_a", "action_zero_a", "axistoolbutton_a",
                             "dro_button_stack_a", "widget_jog_angular", "widget_increments_angular",
                             "a_plus_jogbutton", "a_minus_jogbutton"]
@@ -106,7 +106,6 @@ class HandlerClass:
         STATUS.connect('mode-auto', lambda w: self.enable_auto(True))
         STATUS.connect('gcode-line-selected', lambda w, line: self.set_start_line(line))
         STATUS.connect('hard-limits-tripped', self.hard_limit_tripped)
-        STATUS.connect('program-pause-changed', lambda w, state: self.w.btn_pause_spindle.setEnabled(state))
         STATUS.connect('user-system-changed', lambda w, data: self.user_system_changed(data))
         STATUS.connect('metric-mode-changed', lambda w, mode: self.metric_mode_changed(mode))
         STATUS.connect('file-loaded', self.file_loaded)
@@ -154,7 +153,6 @@ class HandlerClass:
         self.w.stackedWidget_dro.setCurrentIndex(0)
         if self.probe is not None:
             self.probe.hide()
-        self.w.btn_pause_spindle.setEnabled(False)
         self.w.btn_dimensions.setChecked(True)
         self.w.page_buttonGroup.buttonClicked.connect(self.main_tab_changed)
         self.w.filemanager_usb.showMediaDir(quiet = True)
@@ -209,27 +207,8 @@ class HandlerClass:
         pin.value_changed.connect(self.spindle_pwr_changed)
         pin = QHAL.newpin("spindle-volts", QHAL.HAL_FLOAT, QHAL.HAL_IN)
         pin.value_changed.connect(self.spindle_pwr_changed)
-        pin = QHAL.newpin("spindle-fault", QHAL.HAL_U32, QHAL.HAL_IN)
-        pin.value_changed.connect(self.spindle_fault_changed)
 #        QHAL.newpin("spindle_at_speed", QHAL.HAL_BIT, QHAL.HAL_IN)
-        pin = QHAL.newpin("spindle-modbus-errors", QHAL.HAL_U32, QHAL.HAL_IN)
-        pin.value_changed.connect(self.mb_errors_changed)
-        QHAL.newpin("spindle-inhibit", QHAL.HAL_BIT, QHAL.HAL_OUT)
-        pin = QHAL.newpin("spindle-modbus-connection", QHAL.HAL_BIT, QHAL.HAL_IN)
-        pin.value_changed.connect(self.mb_connection_changed)
 
-        # external offset control pins
-        QHAL.newpin("eoffset-enable", QHAL.HAL_BIT, QHAL.HAL_OUT)
-        QHAL.newpin("eoffset-clear", QHAL.HAL_BIT, QHAL.HAL_OUT)
-        QHAL.newpin("eoffset-spindle-count", QHAL.HAL_S32, QHAL.HAL_OUT)
-        QHAL.newpin("eoffset-count", QHAL.HAL_S32, QHAL.HAL_OUT)
-
-        # total external offsets
-        pin = QHAL.newpin("eoffset-value", QHAL.HAL_FLOAT, QHAL.HAL_IN)
-
-        pin = QHAL.newpin("eoffset-zlevel-count", QHAL.HAL_S32, QHAL.HAL_IN)
-        pin.value_changed.connect(self.comp_count_changed)
-        QHAL.newpin("comp-on", Qhal.HAL_BIT, Qhal.HAL_OUT)
 
     def init_preferences(self):
         if not self.w.PREFS_:
@@ -241,8 +220,6 @@ class HandlerClass:
         self.w.lineEdit_laser_y.setText(str(self.w.PREFS_.getpref('Laser Y', -20, float, 'CUSTOM_FORM_ENTRIES')))
         self.w.lineEdit_sensor_x.setText(str(self.w.PREFS_.getpref('Sensor X', 10, float, 'CUSTOM_FORM_ENTRIES')))
         self.w.lineEdit_sensor_y.setText(str(self.w.PREFS_.getpref('Sensor Y', 10, float, 'CUSTOM_FORM_ENTRIES')))
-        self.w.lineEdit_camera_x.setText(str(self.w.PREFS_.getpref('Camera X', 10, float, 'CUSTOM_FORM_ENTRIES')))
-        self.w.lineEdit_camera_y.setText(str(self.w.PREFS_.getpref('Camera Y', 10, float, 'CUSTOM_FORM_ENTRIES')))
         self.w.lineEdit_work_height.setText(str(self.w.PREFS_.getpref('Work Height', 20, float, 'CUSTOM_FORM_ENTRIES')))
         self.w.lineEdit_touch_height.setText(str(self.w.PREFS_.getpref('Touch Height', 40, float, 'CUSTOM_FORM_ENTRIES')))
         self.w.lineEdit_sensor_height.setText(str(self.w.PREFS_.getpref('Sensor Height', 40, float, 'CUSTOM_FORM_ENTRIES')))
@@ -251,8 +228,6 @@ class HandlerClass:
         self.w.lineEdit_max_probe.setText(str(self.w.PREFS_.getpref('Max Probe', 10, float, 'CUSTOM_FORM_ENTRIES')))
         self.w.lineEdit_retract_distance.setText(str(self.w.PREFS_.getpref('Retract Distance', 10, float, 'CUSTOM_FORM_ENTRIES')))
         self.w.lineEdit_z_safe_travel.setText(str(self.w.PREFS_.getpref('Z Safe Travel', 10, float, 'CUSTOM_FORM_ENTRIES')))
-        self.w.lineEdit_eoffset_count.setText(str(self.w.PREFS_.getpref('Eoffset count', 0, float, 'CUSTOM_FORM_ENTRIES')))
-        self.w.chk_eoffsets.setChecked(self.w.PREFS_.getpref('External offsets', False, bool, 'CUSTOM_FORM_ENTRIES'))
         self.w.chk_reload_program.setChecked(self.w.PREFS_.getpref('Reload program', False, bool,'CUSTOM_FORM_ENTRIES'))
         self.w.chk_reload_tool.setChecked(self.w.PREFS_.getpref('Reload tool', False, bool,'CUSTOM_FORM_ENTRIES'))
         self.w.chk_use_keyboard.setChecked(self.w.PREFS_.getpref('Use keyboard', False, bool, 'CUSTOM_FORM_ENTRIES'))
@@ -260,7 +235,6 @@ class HandlerClass:
         self.w.chk_use_touchplate.setChecked(self.w.PREFS_.getpref('Use tool touchplate', False, bool, 'CUSTOM_FORM_ENTRIES'))
         self.w.chk_run_from_line.setChecked(self.w.PREFS_.getpref('Run from line', False, bool, 'CUSTOM_FORM_ENTRIES'))
         self.w.chk_use_virtual.setChecked(self.w.PREFS_.getpref('Use virtual keyboard', False, bool, 'CUSTOM_FORM_ENTRIES'))
-        self.w.chk_use_camera.setChecked(self.w.PREFS_.getpref('Use camera', False, bool, 'CUSTOM_FORM_ENTRIES'))
         self.w.chk_alpha_mode.setChecked(self.w.PREFS_.getpref('Use alpha display mode', False, bool, 'CUSTOM_FORM_ENTRIES'))
         self.w.chk_inhibit_selection.setChecked(self.w.PREFS_.getpref('Inhibit display mouse selection', True, bool, 'CUSTOM_FORM_ENTRIES'))
 
@@ -274,8 +248,6 @@ class HandlerClass:
         self.w.PREFS_.putpref('Laser Y', self.w.lineEdit_laser_y.text().encode('utf-8'), float, 'CUSTOM_FORM_ENTRIES')
         self.w.PREFS_.putpref('Sensor X', self.w.lineEdit_sensor_x.text().encode('utf-8'), float, 'CUSTOM_FORM_ENTRIES')
         self.w.PREFS_.putpref('Sensor Y', self.w.lineEdit_sensor_y.text().encode('utf-8'), float, 'CUSTOM_FORM_ENTRIES')
-        self.w.PREFS_.putpref('Camera X', self.w.lineEdit_camera_x.text().encode('utf-8'), float, 'CUSTOM_FORM_ENTRIES')
-        self.w.PREFS_.putpref('Camera Y', self.w.lineEdit_camera_y.text().encode('utf-8'), float, 'CUSTOM_FORM_ENTRIES')
         self.w.PREFS_.putpref('Work Height', self.w.lineEdit_work_height.text().encode('utf-8'), float, 'CUSTOM_FORM_ENTRIES')
         self.w.PREFS_.putpref('Touch Height', self.w.lineEdit_touch_height.text().encode('utf-8'), float, 'CUSTOM_FORM_ENTRIES')
         self.w.PREFS_.putpref('Sensor Height', self.w.lineEdit_sensor_height.text().encode('utf-8'), float, 'CUSTOM_FORM_ENTRIES')
@@ -284,8 +256,6 @@ class HandlerClass:
         self.w.PREFS_.putpref('Max Probe', self.w.lineEdit_max_probe.text().encode('utf-8'), float, 'CUSTOM_FORM_ENTRIES')
         self.w.PREFS_.putpref('Retract Distance', self.w.lineEdit_retract_distance.text().encode('utf-8'), float, 'CUSTOM_FORM_ENTRIES')
         self.w.PREFS_.putpref('Z Safe Travel', self.w.lineEdit_z_safe_travel.text().encode('utf-8'), float, 'CUSTOM_FORM_ENTRIES')
-        self.w.PREFS_.putpref('Eoffset count', self.w.lineEdit_eoffset_count.text().encode('utf-8'), float, 'CUSTOM_FORM_ENTRIES')
-        self.w.PREFS_.putpref('External offsets', self.w.chk_eoffsets.isChecked(), bool, 'CUSTOM_FORM_ENTRIES')
         self.w.PREFS_.putpref('Reload program', self.w.chk_reload_program.isChecked(), bool, 'CUSTOM_FORM_ENTRIES')
         self.w.PREFS_.putpref('Reload tool', self.w.chk_reload_tool.isChecked(), bool, 'CUSTOM_FORM_ENTRIES')
         self.w.PREFS_.putpref('Use keyboard', self.w.chk_use_keyboard.isChecked(), bool, 'CUSTOM_FORM_ENTRIES')
@@ -293,7 +263,6 @@ class HandlerClass:
         self.w.PREFS_.putpref('Use tool touchplate', self.w.chk_use_touchplate.isChecked(), bool, 'CUSTOM_FORM_ENTRIES')
         self.w.PREFS_.putpref('Run from line', self.w.chk_run_from_line.isChecked(), bool, 'CUSTOM_FORM_ENTRIES')
         self.w.PREFS_.putpref('Use virtual keyboard', self.w.chk_use_virtual.isChecked(), bool, 'CUSTOM_FORM_ENTRIES')
-        self.w.PREFS_.putpref('Use camera', self.w.chk_use_camera.isChecked(), bool, 'CUSTOM_FORM_ENTRIES')
         self.w.PREFS_.putpref('Use alpha display mode', self.w.chk_alpha_mode.isChecked(), bool, 'CUSTOM_FORM_ENTRIES')
         self.w.PREFS_.putpref('Inhibit display mouse selection', self.w.chk_inhibit_selection.isChecked(), bool, 'CUSTOM_FORM_ENTRIES')
 
@@ -497,23 +466,6 @@ class HandlerClass:
             #print(e)
             self.w.spindle_power.setValue(0)
 
-    def spindle_fault_changed(self, data):
-        fault = hex(self.h['spindle-fault'])
-        self.w.lbl_spindle_fault.setText(fault)
-
-    def mb_errors_changed(self, data):
-        errors = self.h['spindle-modbus-errors']
-        self.w.lbl_mb_errors.setText(str(errors))
-
-    def mb_connection_changed(self, data):
-        if data:
-            self.w.lbl_mb_errors.setStyleSheet('')
-        else:
-            self.w.lbl_mb_errors.setStyleSheet('''background-color:rgb(202, 0, 0);''')
-
-    def comp_count_changed(self, data):
-        self.w.z_comp_eoffset_value.setText(format(data*.001, '.3f'))
-
     def dialog_return(self, w, message):
         rtn = message.get('RETURN')
         name = message.get('NAME')
@@ -526,11 +478,6 @@ class HandlerClass:
             self.touchoff('touchplate')
         elif sensor_code and name == 'MESSAGE' and rtn is True:
             self.touchoff('sensor')
-        elif wait_code and name == 'MESSAGE':
-            self.h['eoffset-clear'] = True
-            self.h['eoffset-spindle-count'] = 0
-            self.w.spindle_eoffset_value.setText('0')
-            self.add_status('Spindle lowered')
         elif unhome_code and name == 'MESSAGE' and rtn is True:
             ACTION.SET_MACHINE_UNHOMED(-1)
         elif overwrite and name == 'MESSAGE':
@@ -669,63 +616,13 @@ class HandlerClass:
         self.add_status("Started program from line {}".format(self.start_line))
 
     def btn_stop_clicked(self):
-        if not self.w.btn_pause_spindle.isChecked(): return
-        self.w.btn_pause_spindle.setChecked(False)
-        self.btn_pause_spindle_clicked(False)
+        return
 
     def btn_reload_file_clicked(self):
         if self.last_loaded_program:
             self.w.progressBar.reset()
             self.add_status("Loaded program file {}".format(self.last_loaded_program))
             ACTION.OPEN_PROGRAM(self.last_loaded_program)
-
-    def btn_pause_spindle_clicked(self, state):
-        self.w.action_pause.setEnabled(not state)
-        self.w.action_step.setEnabled(not state)
-        if state:
-        # set external offsets to lift spindle
-            self.h['eoffset-clear'] = False
-            self.h['eoffset-enable'] = self.w.chk_eoffsets.isChecked()
-            fval = float(self.w.lineEdit_eoffset_count.text())
-            self.h['eoffset-spindle-count'] = int(fval)
-            self.w.spindle_eoffset_value.setText(self.w.lineEdit_eoffset_count.text())
-            self.h['spindle-inhibit'] = True
-            self.add_status("Spindle stopped and raised {}".format(fval))
-            if not QHAL.hal.component_exists("z_level_compensation"):
-                self.add_status("Z level compensation HAL component not loaded", CRITICAL)
-                return
-        else:
-            # turn spindle back on
-            self.h['spindle-inhibit'] = False
-            self.add_status('Spindle re-started')
-            # wait for dialog to close before lowering spindle
-            if STATUS.is_auto_running():
-                info = "Wait for spindle at speed signal before resuming"
-                mess = {'NAME':'MESSAGE', 'ICON':'WARNING',
-                        'ID':'_wait_resume_', 'MESSAGE':'CAUTION',
-                        'NONBLOCKING':'True', 'MORE':info, 'TYPE':'OK'}
-                ACTION.CALL_DIALOG(mess)
-
-    def btn_enable_comp_clicked(self, state):
-        if state:
-            fname = os.path.join(PATH.CONFIGPATH, "probe_points.txt")
-            if not os.path.isfile(fname):
-                self.add_status(fname + " not found", CRITICAL)
-                self.w.btn_enable_comp.setChecked(False)
-                return
-            if not QHAL.hal.component_exists("z_level_compensation"):
-                self.add_status("Z level compensation HAL component not loaded", CRITICAL)
-                self.w.btn_enable_comp.setChecked(False)
-                return
-            self.h['comp-on'] = True
-            self.add_status("Z level compensation ON")
-        else:
-            if not QHAL.hal.component_exists("z_level_compensation"):
-                self.add_status("Z level compensation HAL component not loaded", CRITICAL)
-                return
-            self.h['comp-on'] = False
-            self.add_status("Z level compensation OFF", WARNING)
-
 
     # offsets frame
     def btn_goto_location_clicked(self):
@@ -744,26 +641,6 @@ class HandlerClass:
         command = "G53 G0 X{:3.4f} Y{:3.4f}".format(x, y)
         ACTION.CALL_MDI_WAIT(command, self.calc_mdi_move_wait_time(x,y))
  
-    def btn_ref_laser_clicked(self):
-        x = float(self.w.lineEdit_laser_x.text())
-        y = float(self.w.lineEdit_laser_y.text())
-        if not STATUS.is_metric_mode():
-            x = x / 25.4
-            y = y / 25.4
-        self.add_status("Laser offsets set")
-        command = "G10 L20 P0 X{:3.4f} Y{:3.4f}".format(x, y)
-        ACTION.CALL_MDI(command)
-    
-    def btn_ref_camera_clicked(self):
-        x = float(self.w.lineEdit_camera_x.text())
-        y = float(self.w.lineEdit_camera_y.text())
-        if not STATUS.is_metric_mode():
-            x = x / 25.4
-            y = y / 25.4
-        self.add_status("Camera offsets set")
-        command = "G10 L20 P0 X{:3.4f} Y{:3.4f}".format(x, y)
-        ACTION.CALL_MDI(command)
-
     def btn_touchoff_clicked(self):
         if STATUS.get_current_tool() == 0:
             self.add_status("Cannot touchoff with no tool loaded", CRITICAL)
@@ -949,16 +826,6 @@ class HandlerClass:
     def chk_inhibit_selection_changed(self, state):
         self.w.gcodegraphics.set_inhibit_selection(state)
 
-    def chk_use_camera_changed(self, state):
-        self.w.btn_ref_camera.setEnabled(state)
-        if state :
-            self.w.btn_camera.show()
-        else:
-            self.w.btn_camera.hide()
-
-    def chk_use_sensor_changed(self, state):
-        self.w.btn_tool_sensor.setEnabled(state)
-
     def chk_use_touchplate_changed(self, state):
         self.w.btn_touchplate.setEnabled(state)
 
@@ -1077,12 +944,6 @@ class HandlerClass:
         msg.show()
         retval = msg.exec_()
 
-    def disable_spindle_pause(self):
-        self.h['eoffset-spindle-count'] = 0
-        self.h['spindle-inhibit'] = False
-        if self.w.btn_pause_spindle.isChecked():
-            self.w.btn_pause_spindle.setChecked(False)
-
     def touchoff(self, selector):
         if selector == 'touchplate':
             z_offset = float(self.w.lineEdit_touch_height.text())
@@ -1143,8 +1004,6 @@ class HandlerClass:
             self.add_status("Machine ON")
         else:
             self.add_status("Machine OFF")
-        self.w.btn_pause_spindle.setChecked(False)
-        self.h['eoffset-spindle-count'] = 0
         for widget in self.onoff_list:
             self.w[widget].setEnabled(state)
 
