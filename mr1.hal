@@ -15,9 +15,12 @@ loadrt abs names=abs.spindle
 loadrt lowpass names=lowpass.spindle
 loadrt scale names=scale.spindle
 loadrt near
-loadrt or2
-loadrt not count=2
-loadrt debounce cfg=1
+loadrt or2 count=2
+loadrt and2 count=3
+loadrt not count=3
+loadrt dbounce count=2
+#loadrt oneshot count=1
+loadrt toggle count=1
 
 addf hm2_7i96s.0.read           servo-thread
 addf motion-command-handler     servo-thread
@@ -33,38 +36,19 @@ addf lowpass.spindle          	servo-thread
 addf near.0                   	servo-thread
 addf hm2_7i96s.0.write         	servo-thread
 addf or2.0 			servo-thread
+addf or2.1 			servo-thread
 addf not.0 			servo-thread
 addf not.1 			servo-thread
-addf debounce.0			servo-thread
+addf not.2 			servo-thread
+addf and2.0 			servo-thread
+addf and2.1 			servo-thread
+addf and2.2 			servo-thread
+addf dbounce.0			servo-thread
+addf dbounce.1			servo-thread
+#addf oneshot.0			servo-thread
+addf toggle.0			servo-thread
 
 # external output signals
-
-# --- MACHINE-IS-ENABLED ---
-net ssr0out not.0.out hm2_7i96s.0.ssr.00.out-00
-net machine-is-enabled => not.0.in
-
-# --- COOLANT-FLOOD ---
-net coolant-flood  =>     hm2_7i96s.0.outm.00.out-04
-
-# --- SPINDLE-ENABLE ---
-net spindle-enable  =>     hm2_7i96s.0.outm.00.out-05
-
-# external input signals
-
-# --- ESTOP-EXT ---
-net estop-ext     <=  hm2_7i96s.0.inm.00.input-00
-
-# --- HOME-X ---
-net home-x     <=  hm2_7i96s.0.inm.00.input-01-not
-
-# --- HOME-Y ---
-net home-y     <=  hm2_7i96s.0.inm.00.input-02-not
-
-# --- HOME-Y2 ---
-net home-y2     <=  hm2_7i96s.0.inm.00.input-03-not
-
-# --- HOME-Z ---
-net home-z     <=  hm2_7i96s.0.inm.00.input-04-not
 
 
 #*******************
@@ -314,17 +298,17 @@ net spindle-enable      => hm2_7i96s.0.pwmgen.00.enable
 
 # ---Encoder feedback signals/setup---
 
-setp    hm2_7i96s.0.encoder.00.counter-mode 0
-setp    hm2_7i96s.0.encoder.00.filter 1
-setp    hm2_7i96s.0.encoder.00.index-invert 0
-setp    hm2_7i96s.0.encoder.00.index-mask 0
-setp    hm2_7i96s.0.encoder.00.index-mask-invert 0
-setp    hm2_7i96s.0.encoder.00.scale  [SPINDLE_0]ENCODER_SCALE
+#setp    hm2_7i96s.0.encoder.00.counter-mode 0
+#setp    hm2_7i96s.0.encoder.00.filter 1
+#setp    hm2_7i96s.0.encoder.00.index-invert 0
+#setp    hm2_7i96s.0.encoder.00.index-mask 0
+#setp    hm2_7i96s.0.encoder.00.index-mask-invert 0
+#setp    hm2_7i96s.0.encoder.00.scale  [SPINDLE_0]ENCODER_SCALE
 
-net spindle-revs             <=   hm2_7i96s.0.encoder.00.position
-net spindle-vel-fb-rps       <=   hm2_7i96s.0.encoder.00.velocity
-net spindle-vel-fb-rpm       <=   hm2_7i96s.0.encoder.00.velocity-rpm
-net spindle-index-enable     <=>  hm2_7i96s.0.encoder.00.index-enable
+#net spindle-revs             <=   hm2_7i96s.0.encoder.00.position
+#net spindle-vel-fb-rps       <=   hm2_7i96s.0.encoder.00.velocity
+#net spindle-vel-fb-rpm       <=   hm2_7i96s.0.encoder.00.velocity-rpm
+#net spindle-index-enable     <=>  hm2_7i96s.0.encoder.00.index-enable
 
 # ---setup spindle control signals---
 
@@ -394,18 +378,7 @@ net MDI-mode              halui.mode.is-mdi
 
 #  ---coolant signals---
 
-#net coolant-mist      <=  iocontrol.0.coolant-mist
 net coolant-flood     <=  iocontrol.0.coolant-flood
-
-#  ---probe signal---
-
-# expose both probes as "probe-in" signal
-# debounce them since they are a switch type
-setp debounce.0.delay 10
-net touch-probe-in or2.0.in0 <= hm2_7i96s.0.inm.00.input-07-not
-net tool-setter-in or2.0.in1 <= hm2_7i96s.0.inm.00.input-06-not
-net probe-raw debounce.0.0.in <= or2.0.out
-net probe motion.probe-input <= debounce.0.0.out
 
 #  ---motion control signals---
 
@@ -413,18 +386,79 @@ net in-position               <=  motion.in-position
 net machine-is-enabled        <=  motion.motion-enabled
 
 #  ---digital in / out signals---
+#
+#  outputs:
+#  00: 
+#  01: coolant relay
+#  02: spindle bearing air
+#  03: spindle drawbar
+#  04: 
+#  05: spindle vfd
+#  
+#  inputs:
+#  00: e-stop
+#  01: x home
+#  02: y1 home
+#  03: y2 home
+#  04: z home
+#  05: drawbar button
+#  06: toolset probe
+#  07: touch probe
+#  08: cycle start
+#  09: pause switch
+#  10:
 
-#  ---estop signals---
+# drawbar button and relay -- input 5 -> output 3
+# only works if the spindle is off
+# uses oneshot to hold drawbar open for 10 seconds to allow manual change
+# TODO: only work if program not running or paused
+setp toggle.0.debounce 10
+net drawbar-button-raw toggle.0.in <= hm2_7i96s.0.inm.00.input-05
+net spindle-enabled-button => not.2.in
+net spindle-not-on and2.0.in0 <= not.2.out
+net drawbar-button and2.0.in1 <= toggle.0.out
+net drawbar-relay hm2_7i96s.0.ssr.00.out-03 <= and2.0.out
 
-net estop-out     <=  iocontrol.0.user-enable-out
-net estop-ext     =>  iocontrol.0.emc-enable-in
+# cycle start button
+# TODO: make sure drawbar isn't open
+#setp dbounce.1.delay 10
+#net cycle-start-btn-raw dbounce.1.in <= hm2_7i96s.0.inm.00.input-08
+#net cycle-start-btn and2.1.in0 <= dbounce.1.out
+#net idle-on and2.1.in1 <= halui.program.is-idle
+#net cycle-start-program halui.mode.auto halui.program.run <= and2.1.out
 
-#  ---manual tool change signals---
+# pause switch
+#net pause-switch-on and2.2.in0 <= hm2_7i96s.0.inm.00.input-09
+#net running-program and2.2.in1 <= halui.program.is-running
+#net pause-program halui.program.pause <= and2.2.out
 
-# for qtpyvcp, don't use with qtdragon
-#loadusr -W hal_manualtoolchange
-#net tool-change-request     iocontrol.0.tool-change       =>  hal_manualtoolchange.change
-#net tool-change-confirmed   iocontrol.0.tool-changed      <=  hal_manualtoolchange.changed
-#net tool-number             iocontrol.0.tool-prep-number  =>  hal_manualtoolchange.number
-#net tool-prepare-loopback   iocontrol.0.tool-prepare      =>  iocontrol.0.tool-prepared
+# spindle-enable -- pin 5 turns on vfd, pin turns on spindle air
+net spindle-enable  => hm2_7i96s.0.outm.00.out-05
+net spindle-enable  => hm2_7i96s.0.ssr.00.out-02
 
+# coolant control
+net coolant-flood  => hm2_7i96s.0.ssr.00.out-01
+
+# machine-enabled
+net machine-is-enabled => not.0.in
+net ssr0out not.0.out hm2_7i96s.0.ssr.00.out-00
+
+# home switches
+net home-x  <=  hm2_7i96s.0.inm.00.input-01-not
+net home-y  <=  hm2_7i96s.0.inm.00.input-02-not
+net home-y2 <=  hm2_7i96s.0.inm.00.input-03-not
+net home-z  <=  hm2_7i96s.0.inm.00.input-04-not
+
+# probes
+# expose both probes as "probe-in" signal
+# debounce them since they are a switch type
+setp dbounce.0.delay 10
+net touch-probe-in or2.0.in0 <= hm2_7i96s.0.inm.00.input-07-not
+net tool-setter-in or2.0.in1 <= hm2_7i96s.0.inm.00.input-06-not
+net probe-raw dbounce.0.in <= or2.0.out
+net probe motion.probe-input <= dbounce.0.out
+
+# estop signals
+net estop-ext <= hm2_7i96s.0.inm.00.input-00
+net estop-out <= iocontrol.0.user-enable-out
+net estop-ext => iocontrol.0.emc-enable-in

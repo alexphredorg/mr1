@@ -26,7 +26,7 @@ o<tool_setter_manual_change> sub
 	o100 if [#<old_tool> EQ #<probe_tool_number>]
 		o<tool_setter_calibrate> call
 		o101 if [#<_value> LT 0]
-			;(DEBUG, tool_setter_calibrate returned #<_value>)
+			(DEBUG, tool_setter_calibrate returned #<_value>)
 			o<tool_setter_manual_change> return [#<_value>]
 		o101 endif	
 	o100 endif
@@ -36,7 +36,8 @@ o<tool_setter_manual_change> sub
 		( move to changing location)
 		G90								( absolute coordinates )
 		G53 G0 Z#<tool_change_z>
-		G53 G0 X#<tool_change_x> Y#<tool_change_y>
+		G53 G0 X#<tool_change_x>
+		G53 G0 Y#<tool_change_y>
 		M6								( standard tool change )
 	o110 endif
 
