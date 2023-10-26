@@ -1,0 +1,27 @@
+o100 sub
+	#<speed> = #1
+	#<on_seconds> = #2
+	#<off_seconds> = #3
+	#<loops> = #4
+
+	#<iteration> = 0
+	o101 while [#<iteration> LT #<loops>]	
+		(debug, iteration: #<iteration>/<#loops> -- #<speed> rpm for #<on_seconds> seconds)
+		M3 S#<speed>
+		G04 P#<on_seconds>
+		(debug, rest for #<off_seconds>)
+		M5
+		G04 P#<off_seconds>	
+		#<iteration> = [#<iteration> + 1]
+	o101 endwhile
+o100 endsub
+
+; this schedule is for the CNCDepot FM30F
+o100 call [3000] [60] [120] [5]
+o100 call [6000] [120] [120] [5] 
+o100 call [9000] [60] [120] [5]
+o100 call [6000] [60] [120] [3]
+o100 call [9000] [1800] [300] [2]
+o100 call [9000] [300] [120] [2]
+
+M2 (end program)
