@@ -1,22 +1,28 @@
-; manual tool change script
-; operations:
-;   1. nop if the same tool is being loaded again
-;   2. if probe is loaded now then run calibrate to measure the probe length
-;   3. move spindle to where the user can reach it
-;   4. change the tool
-;   5. measure new tool
+; mixed manual/automatic tool change script
+; 
+; Does a manual tool change when either the current tool or new tool
+; pocket isn't defined, otherwise does a fully automatic tool change
+;
 ; returns: positive on success, negative on failure
 ;   
 
 o<tool_setter_manual_change> sub
 	( load configuration from ini )
-	#<tool_change_x> = #<_ini[toolchange]x>
-	#<tool_change_y> = #<_ini[toolchange]y>
-	#<tool_change_z> = #<_ini[toolchange]z>
+	#<tool_change_x> = #<_ini[toolchange]manual_x>
+	#<tool_change_y> = #<_ini[toolchange]manual_y>
+	#<tool_change_z> = #<_ini[toolchange]manual_z>
 	#<probe_tool_number> = #<_ini[toolchange]probe_tool_number>
 	#<empty_tool_number> = #<_ini[toolchange]empty_tool_number>
 	#<old_tool> = #<_current_tool>
 	#<new_tool> = #<_selected_tool>
+	#<old_pocket> = #<_current_pocket>
+	#<new_pocket> = #<_selected_pocket>
+	(PRINT, old_pocket = #<old_pocket>)
+	(PRINT, new_pocket = #<new_pocket>)
+	(PRINT, old_tool = #<old_tool>)
+	(PRINT, new_tool = #<new_tool>)
+
+	(PRINT, in tool_setter_manual_change)
 
 	M70 								( save state ) 
 	M9									( coolant off )
@@ -24,32 +30,74 @@ o<tool_setter_manual_change> sub
 
 	( if the currently loaded tool is the probe then record it's height )
 	o100 if [#<old_tool> EQ #<probe_tool_number>]
+		(PRINT, measure probe)
 		o<tool_setter_calibrate> call
-		o101 if [#<_value> LT 0]
+		o110 if [#<_value> LT 0]
 			(DEBUG, tool_setter_calibrate returned #<_value>)
 			o<tool_setter_manual_change> return [#<_value>]
-		o101 endif	
+		o110 endif	
 	o100 endif
 
-	( do the tool change only if tool number has changed)
-	o110 if [#<old_tool> NE #<new_tool>]
-		( move to changing location)
-		G90								( absolute coordinates )
-		G53 G0 Z#<tool_change_z>
-		G53 G0 X#<tool_change_x>
-		G53 G0 Y#<tool_change_y>
-		M6								( standard tool change )
-	o110 endif
+	( atc unload if the tool came from tool rack )
+	o200 if [#<old_pocket> GT 0]
+		(PRINT, Unloading tool from #<old_pocket>)
+		o<tool_rack_unload_tool> call
+		o210 if [#<_value> LT 0]
+			(DEBUG, tool_rack_unload_tool returned #<_value>)
+			o<tool_setter_manual_change> return [#<_value>]
+		o210 endif
+	o200 endif
+
+	( do the tool change only if tool number has changed and if one pocket is 0 )
+	o300 if [#<old_tool> NE #<new_tool>]
+		o310 if [[#<old_pocket> LE 0] OR [#<new_pocket> LE 0]]
+			(PRINT, manual change)
+			( move to changing location)
+			G90								( absolute coordinates )
+			G53 G0 Z#<tool_change_z>
+			G53 G0 X#<tool_change_x>
+			G53 G0 Y#<tool_change_y>
+			
+			; this is wired to the hal_manualtoolchange to pop up a dialog
+			M64 P01
+
+			; digital-in-02 is wired to the completion of the dialog
+			M66 P2 L3 Q9999
+			o330 if [#5399 EQ -1]
+				(DEBUG, "Timeout waiting for manual tool change")
+				o<tool_setter_manual_change> return [-1]
+			o330 endif
+
+			; reset the change dialog for next time
+			M65 P01
+		o310 endif
+	o300 endif
+
+	( atc load if a pocket is selected )
+	o400 if [#<new_pocket> GT 0]
+		(DEBUG, Loading tool from #<new_pocket>)
+		(PRINT, ATC load)
+		o<tool_rack_load_tool> call
+		o410 if [#<_value> LT 0]
+			(DEBUG, tool_rack_unload_tool returned #<_value>)
+			o<tool_setter_manual_change> return [#<_value>]
+		o410 endif
+	o400 endif
+
+	( tool change ops complete, signal tool change to LinuxCNC )
+	(PRINT, calling M6)
+	M6
 
 	( measure the tool unless it is the probe or spindle is empty )
 	#<_tool_z_offset> = 0
-	o120 if [[#<new_tool> NE #<probe_tool_number>] AND [#<new_tool> NE #<empty_tool_number>]]
+	o500 if [[#<new_tool> NE #<probe_tool_number>] AND [#<new_tool> NE #<empty_tool_number>]]
+		(PRINT, measure tool)
 		o<tool_setter_measure_tool> call
-		o121 if [#<_value> LT 0]
+		o510 if [#<_value> LT 0]
 			(DEBUG, tool_setter_measure_tool returned #<_value>)
 			o<tool_setter_manual_change> return [#<_value>]
-		o121 endif	
-	o120 endif
+		o510 endif	
+	o500 endif
 
 	M72									( restore state )
 

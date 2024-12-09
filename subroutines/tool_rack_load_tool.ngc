@@ -1,0 +1,31 @@
+; Helper function to load a tool from the tool rack
+
+o<tool_rack_load_tool> sub
+	(DEBUG, pocket is #<_selected_pocket>)
+
+	( load parameters from INI )
+	#<pocket> = #<_selected_pocket>
+	#<tool_rack_x> = #<_ini[toolchange]rack_x>
+	#<tool_rack_y> = #<_ini[toolchange]rack_y>
+	#<tool_rack_z> = #<_ini[toolchange]rack_z>
+	#<tool_rack_x_pitch> = #<_ini[toolchange]rack_x_pitch>
+	#<tool_rack_safe_y> = #<_ini[toolchange]rack_safe_y>
+	#<tool_rack_safe_z> = #<_ini[toolchange]rack_safe_z>
+	#<feed> = #<_ini[toolchange]feed>
+
+	( adjust X based on tool pocket number )
+	#<tool_rack_x> = [#<tool_rack_x> + [[#<pocket> - 1] * #<tool_rack_x_pitch>]]
+
+	M5										( ensure spindle is off )
+	G90										( absolute coordinates )
+	G53 G0 Z#<tool_rack_safe_z>				( rapid motion to safe zone)
+	G53 G0 X#<tool_rack_x>
+	G53 G0 Y#<tool_rack_y>					( hover above tool )
+	M64 P00									( turn on power drawbar )
+	G4 P0.2									( pause )
+	G53 G1 Z#<tool_rack_z> F#<feed>         ( lower onto tool )
+	M65 P00									( turn off power drawbar )
+	G4 P0.2									( pause )
+	G53 G1 Y#<tool_rack_safe_y> F#<feed>	( pull tool out of rack )
+o<tool_rack_unload_tool> endsub [1]			( >0 means successful return )
+M2 											( end program )

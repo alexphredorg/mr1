@@ -33,7 +33,8 @@ o<tool_setter_calibrate> sub
 
 	G90 									(absolute coordinates)
 	G53 G0 Z#<tool_setter_z>				(move to above tool setter)
-	G53 G0 X#<tool_setter_x> Y#<tool_setter_y>
+	G53 G0 X#<tool_setter_x>
+	G53 G0 Y#<tool_setter_y>
 
 	G91 									(relative coordinates)
 	F[#<fast_probe_fr>]

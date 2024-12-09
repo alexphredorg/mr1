@@ -1,31 +1,3 @@
-; this does one iteration of a warmup
-; #1 - spindle speed
-; #2 - feed rate
-; #3 - feed distance
-; #4 - feed iterations (each iteration does x, y, z movements and takes 6x the feed distance)
-; total time is #4 * (#3 * 6) / #2
-o100 sub
-	#<speed> = #1
-	#<feed> = #2
-	#<distance> = #3
-	#<loops> = #4
-
-	M3 S#<speed>
-
-	#<iteration> = 0
-	o101 while [#<iteration> LT #<loops>]
-		G1 Z-#<distance> F#<feed>	
-		G1 Z#<distance> F#<feed>
-		G1 Y-#<distance> F#<feed>	
-		G1 Y#<distance> F#<feed>
-		G1 X-#<distance> F#<feed>	
-		G1 X#<distance> F#<feed>
-		#<iteration> = [#<iteration> + 1]
-	o102 endwhile
-
-	M5
-o100 endsub
-
 o<warm_up_mr1> sub
 	; make sure there isn't a tool loaded
 	T0 M6
@@ -54,5 +26,36 @@ o<warm_up_mr1> sub
 	o100 call [9000] [90] [2.5] [24]
 	G04 P60
 o<warm_up_mr1> endsub [1]
+
+; this does one iteration of a warmup
+; #1 - spindle speed
+; #2 - feed rate
+; #3 - feed distance
+; #4 - feed iterations (each iteration does x, y, z movements and takes 6x the feed distance)
+; total time is #4 * (#3 * 6) / #2
+o100 sub
+	#<speed> = #1
+	#<feed> = #2
+	#<distance> = #3
+	#<loops> = #4
+
+	M3 S#<speed>
+	G91
+
+	#<iteration> = 0
+	o101 while [#<iteration> LT #<loops>]
+		(debug, iteration #<iteration> loops #<loops> feed #<feed> distance #<distance>)
+		G1 Z-#<distance> F#<feed>
+		G1 Z#<distance> F#<feed>
+		G1 Y-#<distance> F#<feed>
+		G1 Y#<distance> F#<feed>
+		G1 X-#<distance> F#<feed>
+		G1 X#<distance> F#<feed>
+		#<iteration> = [#<iteration> + 1]
+	o101 endwhile
+
+	M5
+o100 endsub
+
 
 M2 (end program)

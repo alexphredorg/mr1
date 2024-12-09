@@ -1,9 +1,8 @@
 [DIALOG_GEOMETRY]
-AboutDialog-geometry = 910 539 300 150
+AboutDialog-geometry = half
 LncMessage-geometry = 910 539 280 102
-ToolChangeDialog-geometry = 910 539 340 237
-CalculatorDialog-geometry = 910 539 472 376
-_CALCULATOR = 910 539 472 376
+ToolChangeDialog-geometry = default
+basicProbeHelpDialog-geometry = default
 
 [DIALOG_OPTIONS]
 EntryDialog_play_sound = True
@@ -21,8 +20,8 @@ RunFromLineDialog_play_sound = True
 RunFromLineDialog_sound_type = READY
 
 [BOOK_KEEPING]
-last_loaded_directory = /home/cnc/linuxcnc/configs/mr1/subroutines
-last_loaded_file = /home/cnc/linuxcnc/configs/mr1/subroutines/warm_up_mr1.ngc
+last_loaded_directory = 
+last_loaded_file = None
 style_QSS_Path = DEFAULT
 
 [ORIGINOFFSET_SYSTEM_NAMES]
@@ -51,8 +50,7 @@ desktop_notify = True
 notify_max_msgs = 10
 shutdown_check = True
 sound_player_on = False
-mainwindow_geometry = 0 27 1920 1080
-MainWindow-geometry = 0 27 1920 1080
+MainWindow-geometry = 52 0 1920 1080
 
 [MCH_MSG_OPTIONS]
 mchnMsg_play_sound = True
@@ -93,65 +91,41 @@ gcodegraphics-user-lon = 0.0
 Tool to load = 0
 Laser X = 100.0
 Laser Y = -20.0
-Sensor X = 19.4
-Sensor Y = 19.46
-Camera X = 10.0
-Camera Y = 10.0
+Sensor X = 10.0
+Sensor Y = 10.0
 Work Height = 20.0
 Touch Height = 40.0
 Sensor Height = 40.0
-Search Velocity = 20.0
-Probe Velocity = 2.0
-Max Probe = 6.0
-Retract Distance = 0.05
-Z Safe Travel = 0.0
-Eoffset count = 0.0
-External offsets = False
+Search Velocity = 40.0
+Probe Velocity = 10.0
+Max Probe = 10.0
+Retract Distance = 10.0
+Z Safe Travel = 10.0
 Reload program = False
-Reload tool = True
-Use keyboard = True
+Reload tool = False
+Use keyboard = False
+Use tool sensor = False
+Use tool touchplate = False
 Run from line = False
 Use virtual keyboard = False
-Use tool sensor = True
-Use camera = False
 Use alpha display mode = False
 Inhibit display mouse selection = True
-Use tool touchplate = False
 
 [PROBE OPTIONS]
-Probe tool = 99
-Probe diameter = .125
+Probe tool = 0
+Probe diameter = 4
 Probe rapid = 10
 Probe feed = 10
 Probe search = 10
-Probe max travel = 1
-Probe max z = 1
+Probe max travel = 10
+Probe max z = 2
 Probe extra depth = 0
-Probe step off = 0.5
-Probe xy clearance = 0.5
-Probe z clearance = 0.5
-Probe edge width = 0
+Probe step off = 10
+Probe xy clearance = 10
+Probe z clearance = 10
+Probe edge width = 10
 Calibration offset = 0
 Cal x width = 0
 Cal y width = 0
 Cal diameter = 0
-
-[VERSA_PROBE_OPTIONS]
-ps_searchvel = 20.0
-ps_probevel = 2.0
-ps_z_clearance = 0.1
-ps_probe_max = 0.5
-ps_probe_latch = 0.05
-ps_probe_diam = 0.125
-ps_xy_clearance = 0.5
-ps_side_edge_length = 0.5
-ps_probe_height = 20.0
-ps_block_height = 20.0
-use_tool_measurement = False
-ps_offs_x = 0.0
-ps_offs_y = 0.0
-ps_offs_z = 0.0
-ps_offs_angle = 0.0
-ps_probe_rapid_vel = 180.0
-ps_probe_max_z_travel = 0.5
 

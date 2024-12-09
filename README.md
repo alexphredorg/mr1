@@ -1,13 +1,14 @@
 # Langmuir MR-1 configuration for LinuxCNC
 
-My LinuxCNC configuration for the Langmuir MR-1 gantry mill.
+My LinuxCNC configuration for the Langmuir MR-1 gantry mill with CNCDepot FM30F spindle.
 
 WARNING: This is a work in progress and has only been lightly tested by my own use.  It works for me, but I can't
 make any promisses about the suitability of this configuration and code to operate your machine.
 
 Notes on the configuration:
-* I'm using the stock spindle (servo) drive, stepper motors and tool probes.  I've upgraded my stepper drives to Leadshine 
-EM542S, but the configuration here is compatible with the stock steppers as long as you slow down the max velocities.
+* This configuration uses the stepper motors and tool probes with updated Leadshine EM542S stepper drivers 
+EM542S.
+* I'm using a FM30F Spindle from CNCDepot with an Automation Direct GS20 VFD (supplied by CNCDepot)
 * My machine is connected to the PC running LinuxCNC using a MESA 7i96S and ethernet on a private network.
 * Tool changes use probing to set the tool height.  This uses the Langmuir probe and tool setter.  The probe is tool 99 and
 tool length probing is automatic for all tools other than 0 and 99.  When the probe is unloaded it is always measured.
@@ -36,7 +37,8 @@ OK on the screen and the tool is automatically measured for length and the progr
 ![Macros for generating some simple programs](screenshots/macros.png)
 
 ## Wiring Table
-This table contains details on how the MESA 7i96S is wired to the rest of the machine.
+This table contains details on how the MESA 7i96S is wired to the rest of the machine.  It is out of date with
+respect to the FM30F, I will update that in the future.
 
 | MESA 7i96S |     |              |        | Langmuir MR-1       |         |                         |               |
 |------------|-----|--------------|--------|---------------------|---------|-------------------------|---------------|

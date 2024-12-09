@@ -23,6 +23,7 @@ o<tool_setter_measure_tool> sub
 	#<tool_setter_x> = #<_ini[toolsetter]x>
 	#<tool_setter_y> = #<_ini[toolsetter]y>
 	#<tool_setter_z> = #<_ini[toolsetter]z>
+	#<tool_rack_safe_y> = #<_ini[toolchange]rack_safe_y>
 
 	( This was set by tool_setter_calibrate and is the Z difference between the )
 	( workpiece and the tool setter )
@@ -39,8 +40,12 @@ o<tool_setter_measure_tool> sub
 
 	( move to above tool setter )
 	G90 									( absolute coordinates )
-	G53 G0 Z#<tool_setter_z>
-	G53 G0 X#<tool_setter_x> Y#<tool_setter_y>
+	G53 G0 Z#<tool_setter_z>				( move in a safe path to the tool setter )
+	o115 if [#<_abs_x> NE #<tool_setter_x>]
+		G53 G0 Y#<tool_rack_safe_y>
+		G53 G0 X#<tool_setter_x>
+	o115 endif
+	G53 G0 Y#<tool_setter_y>
 
 	G91 (relative coordinates)
 	F #<fast_probe_fr>

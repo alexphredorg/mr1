@@ -1,41 +1,50 @@
-;Tool  Pocket X Offset     Y Offset     Z Offset     Diameter     Remark
-T22    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.125000   ; 2 flute 1/8 endmill
-T23    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.187500   ; 2 flute 3/16 endmill
-T24    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.250000   ; 2 flute 1/4 endmill
-T25    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.312500   ; 2 flute 5/16 endmill
-T26    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.375000   ; 2 flute 3/8 endmill
-T28    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.500000   ; 2 flute 1/2 endmill
-T32    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.125000   ; 3 flute 1/8 endmill
-T33    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.187500   ; 3 flute 3/16 endmill
-T34    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.250000   ; 3 flute 1/4 endmill
-T35    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.312500   ; 3 flute 5/16 endmill
-T36    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.375000   ; 3 flute 3/8 endmill
-T38    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.500000   ; 3 flute 1/2 endmill
-T42    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.125000   ; 4 flute 1/8 endmill
-T43    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.187500   ; 4 flute 3/16 endmill
-T44    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.250000   ; 4 flute 1/4 endmill
-T45    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.312500   ; 4 flute 5/16 endmill
-T46    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.375000   ; 4 flute 3/8 endmill
-T48    P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.500000   ; 4 flute 1/2 endmill
-T99    P0     X+0.000000   Y+0.000000   Z+0.000000   D+0.125000   ; probe
-T122   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.125000   ; 2 flute 1/8 ballmill
-T123   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.187500   ; 2 flute 3/16 ballmill
-T124   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.250000   ; 2 flute 1/4 ballmill
-T125   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.312500   ; 2 flute 5/16 ballmill
-T126   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.375000   ; 2 flute 3/8 ballmill
-T128   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.500000   ; 2 flute 1/2 ballmill
-T142   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.125000   ; 4 flute 1/8 ballmill
-T143   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.187500   ; 4 flute 3/16 ballmill
-T144   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.250000   ; 4 flute 1/4 ballmill
-T145   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.312500   ; 4 flute 5/16 ballmill
-T146   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.375000   ; 4 flute 3/8 ballmill
-T148   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.500000   ; 4 flute 1/2 ballmill
-T222   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.125000   ; 2 flute 1/8 v-mill
-T223   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.187500   ; 2 flute 3/16 v-mill
-T224   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.250000   ; 2 flute 1/4 v-mill
-T225   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.312500   ; 2 flute 5/16 v-mill
-T226   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.375000   ; 2 flute 3/8 v-mill
-T228   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.500000   ; 2 flute 1/2 v-mill
-T501   P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.180000   ; Thread Mill (1/4-20 nom)
-T1003  P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.118000   ; 3mm drill
-T1024  P1     X+0.000000   Y+0.000000   Z+0.000000   D+0.250000   ; 1/4in drill
+T326 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.37500 I0 J0 Q0 ;New Tool 
+T0 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0 I0 J0 Q0 ;empty 
+T22 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.12500 I0 J0 Q0 ;2 flute 1/8 endmill 
+T23 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.18750 I0 J0 Q0 ;2 flute 3/16 endmill 
+T24 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.25000 I0 J0 Q0 ;2 flute 1/4 endmill 
+T25 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.31250 I0 J0 Q0 ;2 flute 5/16 endmill 
+T26 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.37500 I0 J0 Q0 ;2 flute 3/8 endmill 
+T28 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.50000 I0 J0 Q0 ;2 flute 1/2 endmill 
+T32 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.12500 I0 J0 Q0 ;3 flute 1/8 endmill 
+T33 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.18750 I0 J0 Q0 ;3 flute 3/16 endmill 
+T34 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.25000 I0 J0 Q0 ;3 flute 1/4 endmill 
+T35 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.31250 I0 J0 Q0 ;3 flute 5/16 endmill 
+T36 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.37500 I0 J0 Q0 ;3 flute 3/8 endmill 
+T38 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.50000 I0 J0 Q0 ;3 flute 1/2 endmill 
+T42 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.12500 I0 J0 Q0 ;4 flute 1/8 endmill 
+T43 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.18750 I0 J0 Q0 ;4 flute 3/16 endmill 
+T44 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.25000 I0 J0 Q0 ;4 flute 1/4 endmill 
+T45 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.31250 I0 J0 Q0 ;4 flute 5/16 endmill 
+T46 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.37500 I0 J0 Q0 ;4 flute 3/8 endmill 
+T48 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.50000 I0 J0 Q0 ;4 flute 1/2 endmill 
+T99 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.07874 I0 J0 Q0 ;probe 
+T122 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.12500 I0 J0 Q0 ;2 flute 1/8 ballmill 
+T123 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.18750 I0 J0 Q0 ;2 flute 3/16 ballmill 
+T124 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.25000 I0 J0 Q0 ;2 flute 1/4 ballmill 
+T125 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.31250 I0 J0 Q0 ;2 flute 5/16 ballmill 
+T126 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.37500 I0 J0 Q0 ;2 flute 3/8 ballmill 
+T128 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.50000 I0 J0 Q0 ;2 flute 1/2 ballmill 
+T142 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.12500 I0 J0 Q0 ;4 flute 1/8 ballmill 
+T143 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.18750 I0 J0 Q0 ;4 flute 3/16 ballmill 
+T144 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.25000 I0 J0 Q0 ;4 flute 1/4 ballmill 
+T145 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.31250 I0 J0 Q0 ;4 flute 5/16 ballmill 
+T146 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.37500 I0 J0 Q0 ;4 flute 3/8 ballmill 
+T148 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.50000 I0 J0 Q0 ;4 flute 1/2 ballmill 
+T222 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.12500 I0 J0 Q0 ;2 flute 1/8 v-mill 
+T223 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.18750 I0 J0 Q0 ;2 flute 3/16 v-mill 
+T224 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.25000 I0 J0 Q0 ;2 flute 1/4 v-mill 
+T225 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.31250 I0 J0 Q0 ;2 flute 5/16 v-mill 
+T226 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.37500 I0 J0 Q0 ;2 flute 3/8 v-mill 
+T228 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.50000 I0 J0 Q0 ;2 flute 1/2 v-mill 
+T501 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.18000 I0 J0 Q0 ;Thread Mill (1/4-20 nom) 
+T1005 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.20000 I0 J0 Q0 ;5mm drill 
+T1023 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.18750 I0 J0 Q0 ;3/16 drill 
+T1024 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.25000 I0 J0 Q0 ;1/4in drill 
+T1105 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0 I0 J0 Q0 ;5mm spot drill 
+T0 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0 I0 J0 Q0 ; 
+T10050 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0 I0 J0 Q0 ;5mm drill 
+T10040 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0 I0 J0 Q0 ;4mm drill 
+T10030 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.11800 I0 J0 Q0 ;3mm drill 
+T10015 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0 I0 J0 Q0 ;1.5mm drill 
+T10042 P0 X0 Y0 Z0 A0 B0 C0 U0 V0 W0 D0.16535 I0 J0 Q0 ;4.2mm drill 
