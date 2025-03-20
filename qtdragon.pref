@@ -1,8 +1,9 @@
 [DIALOG_GEOMETRY]
 AboutDialog-geometry = half
 LncMessage-geometry = 910 539 280 102
-ToolChangeDialog-geometry = default
+ToolChangeDialog-geometry = 910 551 340 237
 basicProbeHelpDialog-geometry = default
+CalculatorDialog-geometry = 910 551 472 376
 
 [DIALOG_OPTIONS]
 EntryDialog_play_sound = True
@@ -20,9 +21,10 @@ RunFromLineDialog_play_sound = True
 RunFromLineDialog_sound_type = READY
 
 [BOOK_KEEPING]
-last_loaded_directory = 
-last_loaded_file = None
+last_loaded_directory = /home/cnc/linuxcnc/nc_files
+last_loaded_file = /home/cnc/linuxcnc/nc_files/01 RotaryTableUpdate.ngc
 style_QSS_Path = DEFAULT
+RecentPath_0 = /home/cnc/linuxcnc/nc_files/01 RotaryTableUpdate.ngc
 
 [ORIGINOFFSET_SYSTEM_NAMES]
 __dialogOffsetViewWidget-G54 = User System 1
@@ -50,7 +52,7 @@ desktop_notify = True
 notify_max_msgs = 10
 shutdown_check = True
 sound_player_on = False
-MainWindow-geometry = 52 0 1920 1080
+MainWindow-geometry = 0 0 1920 1080
 
 [MCH_MSG_OPTIONS]
 mchnMsg_play_sound = True
@@ -88,7 +90,7 @@ gcodegraphics-user-lat = 0.0
 gcodegraphics-user-lon = 0.0
 
 [CUSTOM_FORM_ENTRIES]
-Tool to load = 0
+Tool to load = 224
 Laser X = 100.0
 Laser Y = -20.0
 Sensor X = 10.0
@@ -103,7 +105,7 @@ Retract Distance = 10.0
 Z Safe Travel = 10.0
 Reload program = False
 Reload tool = False
-Use keyboard = False
+Use keyboard = True
 Use tool sensor = False
 Use tool touchplate = False
 Run from line = False
@@ -112,18 +114,18 @@ Use alpha display mode = False
 Inhibit display mouse selection = True
 
 [PROBE OPTIONS]
-Probe tool = 0
-Probe diameter = 4
+Probe tool = 99
+Probe diameter = 0.079
 Probe rapid = 10
-Probe feed = 10
+Probe feed = 2
 Probe search = 10
-Probe max travel = 10
-Probe max z = 2
+Probe max travel = 1
+Probe max z = 0.5
 Probe extra depth = 0
-Probe step off = 10
-Probe xy clearance = 10
-Probe z clearance = 10
-Probe edge width = 10
+Probe step off = 0.02
+Probe xy clearance = 0.5
+Probe z clearance = 0.1
+Probe edge width = 0.1
 Calibration offset = 0
 Cal x width = 0
 Cal y width = 0

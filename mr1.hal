@@ -1,22 +1,26 @@
 # Langmuir MR-1 with modifications
 # Spindle: AutomationDirect GS20 VFD and CNCDepot FM30F
 # Axis Drivers: Leadshine EM542S
-# Controller: MESA 7i96s (X=0, Y1=1, Y2=2, Z=3)
+# Controller: MESA 7i96s (X=0, Y1=1, Y2=2, Z=3, A=4)
+# I/O board: MESA 7i84 (X=0, Y1=1, Y2=2, Z=3, A=4)
 
 # Mesa 7i96s I/O mapping:
 #
 # outputs:
-#  00: stepper enable inverted (leadshine)
-#  01: coolant relay
-#  02: spindle bearing air
-#  03: spindle drawbar
-#  04: stepper enable (clearpath)
-#  05: spindle vfd enable
+#  7i96s-04: stepper enable (clearpath)
+#  7i96s-05: spindle vfd enable
+#  7i84-00: axis a enable
+#  7i84-08: drawbar air
+#  7i84-09: spindle air
+#  7i84-10: coolant 
+#  7i84-11: drawbar
+#  7i84-12: future air
+#  7i84-13: future air
 #  
 # inputs:
 #  00: e-stop switch
-#  01: x/y1 home
-#  02: y1/z home
+#  01: 
+#  02: 
 #  03: 
 #  04: 
 #  05: drawbar button
@@ -25,13 +29,29 @@
 #  08: cycle start button
 #  09: pause switch
 #  10:
+#  7i84-00: x-home
+#  7i84-01: y1-home
+#  7i84-02: y2-home
+#  7i84-03: z-home
+#  7i84-04: a-home
+#  7i84-13: probe sense (NO)
+#  7i84-14: probe (NC)
+#  7i84-15: tool setter (NC)
+#  7i84-16: spindle fault
+#  7i84-17: x servo fault
+#  7i84-18: y1 servo fault
+#  7i84-19: y2 servo fault
+#  7i84-20: z servo fault
+#  7i84-21: a servo fault
 
 # motion.digital logical wiring:
 #  digital-in-00: cycle start button
 #  digital-in-01: spindle at speed
 #  digital-in-02: tool change dialog finished
+#  digital-in-03: probe is plugged in
 #  digital-out-00: drawbar control
 #  digital-out-01: show tool change dialog
+#  digital-out-02: axis a servo enable
 
 loadrt [KINS]KINEMATICS
 loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JOINTS num_dio=10 num_aio=5
@@ -40,10 +60,10 @@ loadrt hm2_eth board_ip="10.10.10.10" config="num_encoders=1 num_pwmgens=1 num_s
 setp   hm2_7i96s.0.pwmgen.pwm_frequency 20000
 setp   hm2_7i96s.0.pwmgen.pdm_frequency 6000000
 setp   hm2_7i96s.0.watchdog.timeout_ns 5000000
-loadrt pid names=pid.x,pid.y,pid.y2,pid.z,pid.s
+loadrt pid names=pid.x,pid.y,pid.y2,pid.z,pid.a,pid.s
 loadrt near names=near.speed
 loadrt or2 names=or2.drawbar,or2.probe
-loadrt and2 names=and2.drawbar
+loadrt and2 names=and2.drawbar,and2.probe
 loadrt not names=not.enabled,not.spindle
 loadrt dbounce names=dbounce.probe,dbounce.cycle-start
 loadrt toggle names=toggle.drawbar
@@ -57,6 +77,7 @@ addf pid.x.do-pid-calcs         servo-thread
 addf pid.y.do-pid-calcs         servo-thread
 addf pid.y2.do-pid-calcs       	servo-thread
 addf pid.z.do-pid-calcs       	servo-thread
+addf pid.a.do-pid-calcs       	servo-thread
 addf pid.s.do-pid-calcs       	servo-thread
 addf hm2_7i96s.0.write         	servo-thread
 addf near.speed               	servo-thread
@@ -65,6 +86,7 @@ addf or2.probe       			servo-thread
 addf not.enabled     			servo-thread
 addf not.spindle     			servo-thread
 addf and2.drawbar    			servo-thread
+addf and2.probe    			servo-thread
 addf dbounce.cycle-start		servo-thread
 addf dbounce.probe	    		servo-thread
 addf toggle.drawbar	    		servo-thread
@@ -123,9 +145,9 @@ net x-enable     => hm2_7i96s.0.stepgen.00.enable
 
 # ---setup home / limit switch signals---
 
-net home-x-y1     =>  joint.0.home-sw-in
-net x-neg-limit     =>  joint.0.neg-lim-sw-in
-net x-pos-limit     =>  joint.0.pos-lim-sw-in
+net home-x       =>  joint.0.home-sw-in
+net x-neg-limit  =>  joint.0.neg-lim-sw-in
+net x-pos-limit  =>  joint.0.pos-lim-sw-in
 
 #*******************
 #  AXIS Y JOINT 1
@@ -163,7 +185,7 @@ setp   hm2_7i96s.0.stepgen.01.step_type        0
 setp   hm2_7i96s.0.stepgen.01.control-type     1
 setp   hm2_7i96s.0.stepgen.01.maxaccel         [JOINT_1]STEPGEN_MAXACCEL
 setp   hm2_7i96s.0.stepgen.01.maxvel           [JOINT_1]STEPGEN_MAXVEL
-setp   hm2_7i96s.0.stepgen.01.direction.invert_output   true
+setp   hm2_7i96s.0.stepgen.01.direction.invert_output   false
 
 # ---closedloop stepper signals---
 
@@ -177,9 +199,9 @@ net y-enable     => hm2_7i96s.0.stepgen.01.enable
 
 # ---setup home / limit switch signals---
 
-net home-x-y1       =>  joint.1.home-sw-in
-net y-neg-limit     =>  joint.1.neg-lim-sw-in
-net y-pos-limit     =>  joint.1.pos-lim-sw-in
+net home-y1      =>  joint.1.home-sw-in
+net y-neg-limit  =>  joint.1.neg-lim-sw-in
+net y-pos-limit  =>  joint.1.pos-lim-sw-in
 
 #*******************
 #  Tandem AXIS Y2 JOINT 2
@@ -217,7 +239,7 @@ setp   hm2_7i96s.0.stepgen.02.step_type        0
 setp   hm2_7i96s.0.stepgen.02.control-type     1
 setp   hm2_7i96s.0.stepgen.02.maxaccel         [JOINT_2]STEPGEN_MAXACCEL
 setp   hm2_7i96s.0.stepgen.02.maxvel           [JOINT_2]STEPGEN_MAXVEL
-setp   hm2_7i96s.0.stepgen.02.direction.invert_output   true
+setp   hm2_7i96s.0.stepgen.02.direction.invert_output   false
 
 # ---closedloop stepper signals---
 
@@ -231,9 +253,9 @@ net y2-enable     => hm2_7i96s.0.stepgen.02.enable
 
 # ---setup home / limit switch signals---
 
-net home-y2-z        =>  joint.2.home-sw-in
-net y2-neg-limit     =>  joint.2.neg-lim-sw-in
-net y2-pos-limit     =>  joint.2.pos-lim-sw-in
+net home-y2       =>  joint.2.home-sw-in
+net y2-neg-limit  =>  joint.2.neg-lim-sw-in
+net y2-pos-limit  =>  joint.2.pos-lim-sw-in
 
 #*******************
 #  AXIS Z JOINT 3
@@ -284,9 +306,62 @@ net z-enable     => hm2_7i96s.0.stepgen.03.enable
 
 # ---setup home / limit switch signals---
 
-net home-y2-z       =>  joint.3.home-sw-in
-net z-neg-limit     =>  joint.3.neg-lim-sw-in
-net z-pos-limit     =>  joint.3.pos-lim-sw-in
+net home-z       =>  joint.3.home-sw-in
+net z-neg-limit  =>  joint.3.neg-lim-sw-in
+net z-pos-limit  =>  joint.3.pos-lim-sw-in
+
+#*******************
+#  AXIS A JOINT 4
+#*******************
+
+setp   pid.a.Pgain     [JOINT_4]P
+setp   pid.a.Igain     [JOINT_4]I
+setp   pid.a.Dgain     [JOINT_4]D
+setp   pid.a.bias      [JOINT_4]BIAS
+setp   pid.a.FF0       [JOINT_4]FF0
+setp   pid.a.FF1       [JOINT_4]FF1
+setp   pid.a.FF2       [JOINT_4]FF2
+setp   pid.a.deadband  [JOINT_4]DEADBAND
+setp   pid.a.maxoutput [JOINT_4]MAX_OUTPUT
+setp   pid.a.error-previous-target true
+# This setting is to limit bogus stepgen
+# velocity corrections caused by position
+# feedback sample time jitter.
+setp   pid.a.maxerror 0.000500
+
+net a-index-enable  =>  pid.a.index-enable
+net a-enable        =>  pid.a.enable
+net a-pos-cmd       =>  pid.a.command
+net a-pos-fb        =>  pid.a.feedback
+net a-output        <=  pid.a.output
+
+# Step Gen signals/setup
+
+setp   hm2_7i96s.0.stepgen.04.dirsetup        [JOINT_4]DIRSETUP
+setp   hm2_7i96s.0.stepgen.04.dirhold         [JOINT_4]DIRHOLD
+setp   hm2_7i96s.0.stepgen.04.steplen         [JOINT_4]STEPLEN
+setp   hm2_7i96s.0.stepgen.04.stepspace       [JOINT_4]STEPSPACE
+setp   hm2_7i96s.0.stepgen.04.position-scale  [JOINT_4]STEP_SCALE
+setp   hm2_7i96s.0.stepgen.04.step_type        0
+setp   hm2_7i96s.0.stepgen.04.control-type     1
+setp   hm2_7i96s.0.stepgen.04.maxaccel         [JOINT_4]STEPGEN_MAXACCEL
+setp   hm2_7i96s.0.stepgen.04.maxvel           [JOINT_4]STEPGEN_MAXVEL
+
+# ---closedloop stepper signals---
+
+net a-pos-cmd    <= joint.4.motor-pos-cmd
+net a-vel-cmd    <= joint.4.vel-cmd
+net a-output     => hm2_7i96s.0.stepgen.04.velocity-cmd
+net a-pos-fb     <= hm2_7i96s.0.stepgen.04.position-fb
+net a-pos-fb     => joint.4.motor-pos-fb
+net a-enable     <= joint.4.amp-enable-out
+net a-enable     => hm2_7i96s.0.stepgen.04.enable
+
+# ---setup home / limit switch signals---
+
+net home-a       =>  joint.4.home-sw-in
+net a-neg-limit  =>  joint.4.neg-lim-sw-in
+net a-pos-limit  =>  joint.4.pos-lim-sw-in
 
 #*******************
 #  SPINDLE
@@ -369,11 +444,8 @@ net MDI-mode                halui.mode.is-mdi
 net coolant-flood     <=  iocontrol.0.coolant-flood
 
 #  ---motion control signals---
-
 net in-position               <=  motion.in-position
 net machine-is-enabled        <=  motion.motion-enabled
-
-
 
 # drawbar button and relay -- input 5 -> output 3
 # only works if the spindle is off
@@ -390,7 +462,7 @@ net spindle-not-on and2.drawbar.in0 <= not.spindle.out
 net drawbar-button and2.drawbar.in1 <= toggle.drawbar.out
 net drawbar-relay-in1 or2.drawbar.in0 <= and2.drawbar.out
 net drawbar-relay-in2 or2.drawbar.in1 <= motion.digital-out-00
-net drawbar-relay hm2_7i96s.0.ssr.00.out-03 <= or2.drawbar.out
+net drawbar-relay hm2_7i96s.0.7i84.0.0.output-11 <= or2.drawbar.out
 
 # cycle start button
 # TODO: make sure drawbar isn't open
@@ -407,10 +479,11 @@ net drawbar-relay hm2_7i96s.0.ssr.00.out-03 <= or2.drawbar.out
 
 # spindle-enable -- pin 5 turns on vfd, pin turns on spindle air
 net spindle-enable  => hm2_7i96s.0.outm.00.out-05
-net spindle-enable  => hm2_7i96s.0.ssr.00.out-02
+net spindle-enable  => hm2_7i96s.0.7i84.0.0.output-09
 
 # coolant control
-net coolant-flood  => hm2_7i96s.0.ssr.00.out-01
+#net coolant-flood  => hm2_7i96s.0.ssr.00.out-01
+net coolant-flood  => hm2_7i96s.0.7i84.0.0.output-10
 
 # machine-enabled sets out-00 to false and out-04 to true
 net machine-is-enabled => not.enabled.in
@@ -418,17 +491,28 @@ net ssr0out not.enabled.out hm2_7i96s.0.ssr.00.out-00
 net machine-is-enabled => hm2_7i96s.0.outm.00.out-04
 
 # home switches
-net home-x-y1 <=  hm2_7i96s.0.inm.00.input-01
-net home-y2-z <=  hm2_7i96s.0.inm.00.input-02
+net home-x  <=  hm2_7i96s.0.7i84.0.0.input-00
+net home-y1 <=  hm2_7i96s.0.7i84.0.0.input-01
+net home-y2 <=  hm2_7i96s.0.7i84.0.0.input-02
+net home-z  <=  hm2_7i96s.0.7i84.0.0.input-03
+#net home-a  <=  hm2_7i96s.0.7i84.0.0.input-04
 
-# probes
+# enable axis-a through user control
+# this is done on it's own because the axis will auto-home when enabled
+net axis-a-enable hm2_7i96s.0.7i84.0.0.output-00 <= motion.digital-out-02
+
+# probe and tool setter logic
 # expose both probes as "probe-in" signal
 # debounce them since they are a switch type
+# probe input is only valid if the probe-sense is high
 setp dbounce.probe.delay 10
-net touch-probe-in or2.probe.in0 <= hm2_7i96s.0.inm.00.input-07-not
-net tool-setter-in or2.probe.in1 <= hm2_7i96s.0.inm.00.input-06-not
+net touch-probe-sense and2.probe.in0 <= hm2_7i96s.0.7i84.0.0.input-13
+net touch-probe-sense => spindle.0.inhibit 
+net touch-probe-in-raw and2.probe.in1 <= hm2_7i96s.0.7i84.0.0.input-14-not
+net touch-probe-in or2.probe.in0 <= and2.probe.out
+net tool-setter-in or2.probe.in1 <= hm2_7i96s.0.7i84.0.0.input-15-not
 net probe-raw dbounce.probe.in <= or2.probe.out
-net probe motion.probe-input <= dbounce.probe.out
+net probe-in motion.probe-input <= dbounce.probe.out
 
 # estop signals
 net estop-ext <= hm2_7i96s.0.inm.00.input-00
@@ -438,30 +522,30 @@ net estop-ext => iocontrol.0.emc-enable-in
 # modbus control of vfd
 loadusr -Wn gs20-vfd mb2hal config=gs20_vfd_modbus.ini
 
-# divide raw frequency command by 100
+# modbus: divide raw frequency command by 100
 net raw-freq-command mult2.freq_cmd.in0 <= gs20-vfd.00.raw_freq_cmd.float
 setp mult2.freq_cmd.in1 0.01
 net vfd-spindle-freq-command mult2.freq_cmd.out
 
-# divide raw frequency output by 100
+# modbus: divide raw frequency output by 100
 net raw-freq-output mult2.freq_out.in0 <= gs20-vfd.00.raw_output_freq.float
 setp mult2.freq_out.in1 0.01
 net vfd-spindle-freq-output mult2.freq_out.out
 
-# divide current by 100
+# modbus: divide current by 100
 net raw-current mult2.current.in0 <= gs20-vfd.00.raw_output_current.float
 setp mult2.current.in1 0.01
 net spindle-amps mult2.current.out
 
-# divide volts by 10
+# modbus: divide volts by 10
 net raw-voltage mult2.voltage.in0 <= gs20-vfd.00.raw_output_voltage.float
 setp mult2.voltage.in1 0.1
 net spindle-volts mult2.voltage.out
 
-# get spindle speed back from the vfd
+# modbus: get spindle speed back from the vfd
 net vfd-motor-speed gs20-vfd.00.raw_motor_speed.float
 
-# see if the spindle speed is near the commanded speed (5% error)
+# modbus: see if the spindle speed is near the commanded speed (5% error)
 setp near.speed.scale 1.05
 net spindle-vel-cmd-rpm => near.speed.in1
 net vfd-motor-speed => near.speed.in2

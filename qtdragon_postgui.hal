@@ -14,6 +14,8 @@ net tool-prep-loop iocontrol.0.tool-prepare iocontrol.0.tool-prepared
 net manual-tool-change      hal_manualtoolchange.change     <= motion.digital-out-01
 net manual-tool-changed     motion.digital-in-02            <= hal_manualtoolchange.changed
 net manual-tool-number      hal_manualtoolchange.number     <= iocontrol.0.tool-prep-number
+#net probe-installed	    motion.digital-in-03	    <= spindle.0.inhibit
+net touch-probe-sense => motion.digital-in-03
 #net manual-tool-button      hal_manualtoolchange.change_button 
 
 # probe LED

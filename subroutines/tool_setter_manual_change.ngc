@@ -68,6 +68,15 @@ o<tool_setter_manual_change> sub
 				o<tool_setter_manual_change> return [-1]
 			o330 endif
 
+			; check to see if the probe is installed
+			; o340 if [#<new_tool> EQ #<probe_tool_number>]
+				; ; read the "probe-installed" pin, it is stored in #5399
+				; M66 P3 L0
+				; o341 if [#5399 NE 0]
+					; (DEBUG, "Probe requested but not plugged in")
+					; o<tool_setter_manual_change> return [-1]
+				; o341 endif
+			; o340 endif
 			; reset the change dialog for next time
 			M65 P01
 		o310 endif
