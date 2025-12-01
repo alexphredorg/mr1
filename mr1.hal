@@ -68,6 +68,7 @@ loadrt not names=not.enabled,not.spindle
 loadrt dbounce names=dbounce.probe,dbounce.cycle-start
 loadrt toggle names=toggle.drawbar
 loadrt mult2 names=mult2.freq_cmd,mult2.freq_out,mult2.voltage,mult2.current
+loadrt probecheck
 
 
 addf hm2_7i96s.0.read           servo-thread
@@ -94,6 +95,7 @@ addf mult2.freq_cmd 			servo-thread
 addf mult2.freq_out 			servo-thread
 addf mult2.voltage  			servo-thread
 addf mult2.current	    		servo-thread
+addf probecheck.0			servo-thread
 
 #*******************
 #  AXIS X JOINT 0
@@ -513,6 +515,12 @@ net touch-probe-in or2.probe.in0 <= and2.probe.out
 net tool-setter-in or2.probe.in1 <= hm2_7i96s.0.7i84.0.0.input-15-not
 net probe-raw dbounce.probe.in <= or2.probe.out
 net probe-in motion.probe-input <= dbounce.probe.out
+net probecheck-curremt-tool probecheck.0.current-tool-number <= iocontrol.0.tool-number
+setp probecheck.0.probe-tool-number 99
+net touch-probe-sense => probecheck.0.probe-sense
+net probe-not-ready <= probecheck.0.probe-not-ready
+net probe-not-ready => motion.jog-inhibit
+net probe-not-ready => motion.feed-inhibit
 
 # estop signals
 net estop-ext <= hm2_7i96s.0.inm.00.input-00
