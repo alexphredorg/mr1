@@ -1,0 +1,12 @@
+component probecheck "Check to see if the probe is inserted and available";
+pin in s32 current_tool_number;
+pin in s32 probe_tool_number;
+pin in bit probe_sense;
+pin out bit probe_ready;
+pin out bit probe_not_ready;
+variable double old;
+function _;
+license "GPL"; // indicates GPL v2 or later
+;;
+probe_ready = (current_tool_number != probe_tool_number) || (current_tool_number == probe_tool_number && probe_sense);
+probe_not_ready = !probe_ready;
