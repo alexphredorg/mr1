@@ -18,31 +18,51 @@
 #  7i84-13: future air
 #  
 # inputs:
-#  00: e-stop switch
-#  01: 
-#  02: 
+#  00: e-stop switch (yellow)
+#  01: cycle start (green)
+#  02: drawbar (grey)
 #  03: 
 #  04: 
-#  05: drawbar button
-#  06: toolset probe
-#  07: touch probe
-#  08: cycle start button
-#  09: pause switch
+#  05: 
+#  06: 
+#  07: 
+#  08: 
+#  09: 
 #  10:
-#  7i84-00: x-home
-#  7i84-01: y1-home
-#  7i84-02: y2-home
-#  7i84-03: z-home
-#  7i84-04: a-home
-#  7i84-13: probe sense (NO)
-#  7i84-14: probe (NC)
-#  7i84-15: tool setter (NC)
-#  7i84-16: spindle fault
-#  7i84-17: x servo fault
-#  7i84-18: y1 servo fault
-#  7i84-19: y2 servo fault
-#  7i84-20: z servo fault
-#  7i84-21: a servo fault
+#  bank 1 -- 24v
+#  7i84-00: enc0 switch (blue) (ANALOG)
+#  7i84-01: enc1 switch (brown) (ANALOG)
+#  7i84-02: 
+#  7i84-03: a-home (future)
+#  7i84-04: x-home
+#  7i84-05: y1-home
+#  7i84-06: y2-home
+#  7i84-07: z-home
+#  7i84-08: 
+#  7i84-09: 
+#  7i84-10: 
+#  7i84-11: 
+#  7i84-12: 
+#  7i84-13: probe sense (NO) (pink)
+#  7i84-14: probe (NC) (blue)
+#  7i84-15: tool setter (NC) (orange)
+#  bank 2 -- 24v
+#  7i84-16: enc0 A (pink)
+#  7i84-17: enc0 B (purple)
+#  7i84-18: enc1 A
+#  7i84-19: enc1 B
+#  7i84-20: 
+#  7i84-21: 
+#  7i84-22:
+#  7i84-23:
+#  7i84-24: x fault (future)
+#  7i84-25: y1 fault (future)
+#  7i84-26: y2 fault (future)
+#  7i84-27: z fault (future)
+#  7i84-28: a fault (future)
+#  7i84-29: spindle fault (future)
+#  7i84-30:
+#  7i84-31:
 
 # motion.digital logical wiring:
 #  digital-in-00: cycle start button
@@ -56,7 +76,7 @@
 loadrt [KINS]KINEMATICS
 loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JOINTS num_dio=10 num_aio=5
 loadrt hostmot2
-loadrt hm2_eth board_ip="10.10.10.10" config="num_encoders=1 num_pwmgens=1 num_stepgens=5 sserial_port_0=0xxxxx" 
+loadrt hm2_eth board_ip="10.10.10.10" config="num_encoders=1 num_pwmgens=1 num_stepgens=5 sserial_port_0=2xxxxx" 
 setp   hm2_7i96s.0.pwmgen.pwm_frequency 20000
 setp   hm2_7i96s.0.pwmgen.pdm_frequency 6000000
 setp   hm2_7i96s.0.watchdog.timeout_ns 5000000
@@ -67,21 +87,23 @@ loadrt and2 names=and2.drawbar,and2.probe
 loadrt not names=not.enabled,not.spindle
 loadrt dbounce names=dbounce.probe,dbounce.cycle-start
 loadrt toggle names=toggle.drawbar
-loadrt mult2 names=mult2.freq_cmd,mult2.freq_out,mult2.voltage,mult2.current
+loadrt mult2 names=mult2.freq_cmd,mult2.freq_out,mult2.voltage,mult2.current,mult2.feed_ov,mult2.spindle_ov
 loadrt probecheck
+loadrt comp count=1
+loadrt passthru names=passthru.enc0
+loadrt rateknob names=rateknob.enc0
 
-
-addf hm2_7i96s.0.read           servo-thread
-addf motion-command-handler     servo-thread
-addf motion-controller          servo-thread
-addf pid.x.do-pid-calcs         servo-thread
-addf pid.y.do-pid-calcs         servo-thread
-addf pid.y2.do-pid-calcs       	servo-thread
-addf pid.z.do-pid-calcs       	servo-thread
-addf pid.a.do-pid-calcs       	servo-thread
-addf pid.s.do-pid-calcs       	servo-thread
-addf hm2_7i96s.0.write         	servo-thread
-addf near.speed               	servo-thread
+addf hm2_7i96s.0.read           	servo-thread
+addf motion-command-handler     	servo-thread
+addf motion-controller          	servo-thread
+addf pid.x.do-pid-calcs       		servo-thread
+addf pid.y.do-pid-calcs         	servo-thread
+addf pid.y2.do-pid-calcs       		servo-thread
+addf pid.z.do-pid-calcs       		servo-thread
+addf pid.a.do-pid-calcs       		servo-thread
+addf pid.s.do-pid-calcs       		servo-thread
+addf hm2_7i96s.0.write         		servo-thread
+addf near.speed               		servo-thread
 addf or2.drawbar		    	servo-thread
 addf or2.probe       			servo-thread
 addf not.enabled     			servo-thread
@@ -95,7 +117,12 @@ addf mult2.freq_cmd 			servo-thread
 addf mult2.freq_out 			servo-thread
 addf mult2.voltage  			servo-thread
 addf mult2.current	    		servo-thread
+addf mult2.feed_ov	    		servo-thread
+addf mult2.spindle_ov	    		servo-thread
 addf probecheck.0			servo-thread
+addf comp.0				servo-thread
+addf passthru.enc0			servo-thread
+addf rateknob.enc0			servo-thread
 
 #*******************
 #  AXIS X JOINT 0
@@ -458,7 +485,7 @@ net machine-is-enabled        <=  motion.motion-enabled
 # a toggle which goes to relay-in1.  Relay-in2 is a direct
 # path available through g-code for the tool changer
 setp toggle.drawbar.debounce 10
-net drawbar-button-raw toggle.drawbar.in <= hm2_7i96s.0.inm.00.input-05
+net drawbar-button-raw toggle.drawbar.in <= hm2_7i96s.0.inm.00.input-02
 net spindle-enabled-button => not.spindle.in
 net spindle-not-on and2.drawbar.in0 <= not.spindle.out
 net drawbar-button and2.drawbar.in1 <= toggle.drawbar.out
@@ -493,10 +520,10 @@ net ssr0out not.enabled.out hm2_7i96s.0.ssr.00.out-00
 net machine-is-enabled => hm2_7i96s.0.outm.00.out-04
 
 # home switches
-net home-x  <=  hm2_7i96s.0.7i84.0.0.input-00
-net home-y1 <=  hm2_7i96s.0.7i84.0.0.input-01
-net home-y2 <=  hm2_7i96s.0.7i84.0.0.input-02
-net home-z  <=  hm2_7i96s.0.7i84.0.0.input-03
+net home-x  <=  hm2_7i96s.0.7i84.0.0.input-04
+net home-y1 <=  hm2_7i96s.0.7i84.0.0.input-05
+net home-y2 <=  hm2_7i96s.0.7i84.0.0.input-06
+net home-z  <=  hm2_7i96s.0.7i84.0.0.input-07
 #net home-a  <=  hm2_7i96s.0.7i84.0.0.input-04
 
 # enable axis-a through user control
@@ -515,7 +542,7 @@ net touch-probe-in or2.probe.in0 <= and2.probe.out
 net tool-setter-in or2.probe.in1 <= hm2_7i96s.0.7i84.0.0.input-15-not
 net probe-raw dbounce.probe.in <= or2.probe.out
 net probe-in motion.probe-input <= dbounce.probe.out
-net probecheck-curremt-tool probecheck.0.current-tool-number <= iocontrol.0.tool-number
+net probecheck-current-tool probecheck.0.current-tool-number <= iocontrol.0.tool-number
 setp probecheck.0.probe-tool-number 99
 net touch-probe-sense => probecheck.0.probe-sense
 net probe-not-ready <= probecheck.0.probe-not-ready
@@ -561,8 +588,29 @@ net spindle-at-speed spindle.0.at-speed <= near.speed.out
 
 # cycle start button is used to signal
 # end of tool change
-net cycle-start-button motion.digital-in-00 <= hm2_7i96s.0.inm.00.input-08
+net cycle-start-button motion.digital-in-00 <= hm2_7i96s.0.inm.00.input-01
 
 # spindle-at-speed signal is copied to digital-in-01 to know when the 
 # spindle is at zero rpm
 net spindle-at-speed => motion.digital-in-01
+
+# this makes 2% jumps using the encoder
+setp halui.feed-override.scale 0.02
+setp halui.spindle.0.override.scale 0.02
+
+# sets up input from the encoder 0
+setp comp.0.hyst 0.2
+setp comp.0.in1 0.0
+net enc0-button-raw hm2_7i96s.0.7i84.0.0.analogin0 => comp.0.in0
+net enc0-button comp.0.equal => rateknob.enc0.button
+net enc0-counts hm2_7i96s.0.7i84.0.0.enc0.count => rateknob.enc0.in
+# setup output from the encoder 0
+#net enc0-reset-in rateknob.enc0.reset => passthru.enc0.in
+net enc0-reset passthru.enc0.out => hm2_7i96s.0.7i84.0.0.enc0.reset
+#net enc0-feedoverride rateknob.enc0.out1 => halui.feed-override.counts
+net enc0-feedoverride-en rateknob.enc0.out1-selected => halui.feed-override.count-enable
+#net enc0-spinoverride rateknob.enc0.out2 => halui.spindle.0.override.counts
+net enc0-spinoverride-en rateknob.enc0.out2-selected => halui.spindle.0.override.count-enable
+
+net enc0-counts halui.feed-override.counts
+net enc0-counts halui.spindle.0.override.counts

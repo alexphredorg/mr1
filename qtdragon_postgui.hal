@@ -20,6 +20,11 @@ net touch-probe-sense => motion.digital-in-03
 
 # probe LED
 net probe-in  =>  qtdragon.led-probe
+net probe-not-ready => qtdragon.led-probe-fault
+
+# override lights
+net enc0-feedoverride-en => qtdragon.led-feedrate-override
+net enc0-spinoverride-en => qtdragon.led-spindle-override
 
 # spindle gauge
 net vfd-motor-speed => qtdragon.gauge_spindle_value

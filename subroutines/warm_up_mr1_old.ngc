@@ -15,15 +15,15 @@ o<warm_up_mr1> sub
 	G91
 
 	; 3 minutes at 25% of spindle max and 15ipm movements
-	o100 call [4000] [15] [2.5] [4]
+	o100 call [3000] [15] [2.5] [4]
 	G04 P60
 
-	; 3 minutes at 50% of spindle max and 45ipm movements
-	o200 call [8000] [180]
+	; 4 minutes at 50% of spindle max and 45ipm movements
+	o100 call [6000] [45] [2.5] [12]
 	G04 P60
 
-	; 3 minutes at 75% of spindle max and 90ipm movements
-	o100 call [12000] [180]
+	; 4 minutes at 75% of spindle max and 90ipm movements
+	o100 call [9000] [90] [2.5] [24]
 	G04 P60
 o<warm_up_mr1> endsub [1]
 
@@ -44,6 +44,7 @@ o100 sub
 
 	#<iteration> = 0
 	o101 while [#<iteration> LT #<loops>]
+		(debug, iteration #<iteration> loops #<loops> feed #<feed> distance #<distance>)
 		G1 Z-#<distance> F#<feed>
 		G1 Z#<distance> F#<feed>
 		G1 Y-#<distance> F#<feed>
@@ -55,22 +56,6 @@ o100 sub
 
 	M5
 o100 endsub
-
-; this does one iteration of a warmup
-; #1 - spindle speed
-; #2 - time
-o200 sub
-	#<speed> = #1
-	#<time> = #2
-
-	M3 S#<speed>
-	G91
-
-	G04 P#<time>
-
-
-	M5
-o200 endsub
 
 
 M2 (end program)

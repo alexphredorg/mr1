@@ -207,7 +207,10 @@ class HandlerClass:
         pin.value_changed.connect(self.spindle_pwr_changed)
         pin = QHAL.newpin("spindle-volts", QHAL.HAL_FLOAT, QHAL.HAL_IN)
         pin.value_changed.connect(self.spindle_pwr_changed)
-#        QHAL.newpin("spindle_at_speed", QHAL.HAL_BIT, QHAL.HAL_IN)
+        #pin = QHAL.newpin("feedrate-override-selected", QHAL.HAL_BIT, QHAL.HAL_IN)
+        #pin.value_changed.connect(self.feedrate_override_selected_changed)
+        #pin = QHAL.newpin("spindle-override-selected", QHAL.HAL_BIT, QHAL.HAL_IN)
+        #pin.value_changed.connect(self.spindle_override_selected_changed)
 
 
     def init_preferences(self):

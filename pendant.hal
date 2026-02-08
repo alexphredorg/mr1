@@ -146,19 +146,19 @@ net pdnt.spindle.decrease whb.halui.spindle.decrease halui.spindle.0.decrease # 
 #net pdnt.spindle-speed-abs whb.halui.spindle-speed-cmd spindle.0.speed-out-abs # speed cmd from motion in rpm absolue
 
 # spindle speed override signals
-net pdnt.spindle-override.scale whb.halui.spindle-override.scale halui.spindle.0.override.scale # needed for both spindle+/- and spindleoverride+/- button
-net pdnt.spindle.override.value halui.spindle.0.override.value whb.halui.spindle-override.value # GUI feed rate related signals
-net pdnt.spindle.override.increase whb.halui.spindle-override.increase halui.spindle.0.override.increase
-net pdnt.spindle.override.decrease whb.halui.spindle-override.decrease halui.spindle.0.override.decrease
+#net pdnt.spindle-override.scale whb.halui.spindle-override.scale halui.spindle.0.override.scale # needed for both spindle+/- and spindleoverride+/- button
+#net pdnt.spindle.override.value halui.spindle.0.override.value whb.halui.spindle-override.value # GUI feed rate related signals
+#net pdnt.spindle.override.increase whb.halui.spindle-override.increase halui.spindle.0.override.increase
+#net pdnt.spindle.override.decrease whb.halui.spindle-override.decrease halui.spindle.0.override.decrease
 
 # GUI feed rate related signals can be used when program is running moving GUI slider
-net pdnt.feed-override.scale whb.halui.feed-override.scale halui.feed-override.scale # needed for both FeedOverride+/- and rotary knob button
-net pdnt.max-velocity.value whb.halui.max-velocity.value halui.max-velocity.value # needed for Mpg mode : button feed position% * max-velocity = Mpg feedrate
+#net pdnt.feed-override.scale whb.halui.feed-override.scale halui.feed-override.scale # needed for both FeedOverride+/- and rotary knob button
+#net pdnt.max-velocity.value whb.halui.max-velocity.value halui.max-velocity.value # needed for Mpg mode : button feed position% * max-velocity = Mpg feedrate
 
 # take feed override min/max values from/to the GUI
-net pdnt.feed-override.value halui.feed-override.value whb.halui.feed-override.value # GUI feed rate related signals
-net pdnt.feed-override.increase whb.halui.feed-override.increase halui.feed-override.increase
-net pdnt.feed-override.decrease whb.halui.feed-override.decrease halui.feed-override.decrease
+#net pdnt.feed-override.value halui.feed-override.value whb.halui.feed-override.value # GUI feed rate related signals
+#net pdnt.feed-override.increase whb.halui.feed-override.increase halui.feed-override.increase
+#net pdnt.feed-override.decrease whb.halui.feed-override.decrease halui.feed-override.decrease
 
 # axis position related signals feedback
 net pdnt.axis.x.pos-feedback halui.axis.x.pos-feedback whb.halui.axis.x.pos-feedback
