@@ -379,7 +379,7 @@ widget:
                                                         name: btn_utils
                                                         properties:
                                                           sizePolicy: Fixed/Fixed
-                                                          text: UTILS
+                                                          text: MACROS
                                                           checkable: true
                                                           index*: 7
                                                           fixedSize: 80x40

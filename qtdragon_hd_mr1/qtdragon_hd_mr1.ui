@@ -1059,7 +1059,7 @@
                  </sizepolicy>
                 </property>
                 <property name="text">
-                 <string>UTILS</string>
+                 <string>MACROS</string>
                 </property>
                 <property name="checkable">
                  <bool>true</bool>
