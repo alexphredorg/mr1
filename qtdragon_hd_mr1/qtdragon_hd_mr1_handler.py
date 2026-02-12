@@ -8,10 +8,7 @@ from qtvcp.widgets.stylesheeteditor import StyleSheetEditor as SSE
 from qtvcp.widgets.file_manager import FileManager as FM
 from qtvcp.lib.qt_ngcgui.ngcgui import NgcGui
 from qtvcp.lib.auto_height.auto_height import Auto_Measure
-from qtvcp.lib.writer import writer
 from qtvcp.lib.keybindings import Keylookup
-from qtvcp.lib.gcodes import GCodes
-from qtvcp.lib.qt_pdf import PDFViewer
 from qtvcp.lib.aux_program_loader import Aux_program_loader
 from qtvcp.core import Status, Action, Info, Path, Qhal
 from qtvcp import logger
@@ -26,7 +23,6 @@ INFO = Info()
 ACTION = Action()
 PATH = Path()
 STYLEEDITOR = SSE()
-WRITER = writer.Main()
 QHAL = Qhal()
 
 # constants for tab pages
@@ -39,11 +35,8 @@ TAB_OFFSETS = 2
 TAB_TOOL = 3
 TAB_STATUS = 4
 TAB_CAMVIEW = 5
-TAB_GCODES = 6
-TAB_SETUP = 7
-TAB_SETTINGS = 8
-TAB_UTILS = 9
-TAB_USER = 10
+TAB_SETTINGS = 6
+TAB_UTILS = 7
 
 # constants for (left side) stacked widget
 PAGE_UNCHANGED = -1
@@ -58,7 +51,6 @@ class HandlerClass:
     def __init__(self, halcomp, widgets, paths):
         self.h = halcomp
         self.w = widgets
-        self.gcodes = GCodes(widgets)
         # This validator precludes using comma as a decimal
         self.valid = QtGui.QRegExpValidator(QtCore.QRegExp('-?[0-9]{0,6}[.][0-9]{0,3}'))
         self.styleeditor = SSE(widgets, paths)
@@ -74,8 +66,6 @@ class HandlerClass:
         # some global variables
         self.factor = 1.0
         self.probe = None
-        self.default_setup = os.path.join(PATH.CONFIGPATH, "default_setup.html")
-        self.docs = os.path.join(PATH.SCREENDIR, PATH.BASEPATH,'docs/getting_started.html')
         self.start_line = 0
         self.run_time = 0
         self.time_tenths = 0
@@ -117,23 +107,6 @@ class HandlerClass:
         STATUS.connect('requested-spindle-speed-changed',self.update_spindle_requested)
         STATUS.connect('override-limits-changed', lambda w, state, data: self._check_override_limits(state, data))
         STATUS.connect('graphics-gcode-properties', lambda w, d: self.update_gcode_properties(d))
-
-        self.html = """<html>
-<head>
-<title>Test page for the download:// scheme</title>
-</head>
-<body>
-<h1>Setup Tab</h1>
-<p>If you select a file with .html as a file ending, it will be shown here..</p>
-<li><a href="http://linuxcnc.org/docs/devel/html/">Documents online</a></li>
-<li><a href="file://%s">Local files</a></li>
-<img src="file://%s" alt="lcnc_swoop" />
-<hr />
-</body>
-</html>
-"""%(  os.path.expanduser('~/linuxcnc'),
-        os.path.join(paths.IMAGEDIR,'lcnc_swoop.png'))
-
 
     def class_patch__(self):
         # override file manager load button
@@ -289,58 +262,12 @@ class HandlerClass:
         self.w.divider_line.hide()
         # move clock to statusbar
         self.w.statusbar.addPermanentWidget(self.w.lbl_clock)
-        #set up gcode list
-        self.gcodes.setup_list()
-
-        # check for default setup html file
-        try:
-            # web view widget for SETUP page
-            if self.w.web_view:
-                self.toolBar = QtWidgets.QToolBar(self.w)
-                self.w.tabWidget_setup.setCornerWidget(self.toolBar)
-
-                self.backBtn = QtWidgets.QPushButton(self.w)
-                self.backBtn.setEnabled(True)
-                self.backBtn.setIconSize(QtCore.QSize(48, 48))
-                self.backBtn.setIcon(QtGui.QIcon(':/qt-project.org/styles/commonstyle/images/left-32.png'))
-                self.backBtn.clicked.connect(self.back)
-                self.toolBar.addWidget(self.backBtn)
-
-                self.forBtn = QtWidgets.QPushButton(self.w)
-                self.forBtn.setEnabled(True)
-                self.forBtn.setIconSize(QtCore.QSize(48, 48))
-                self.forBtn.setIcon(QtGui.QIcon(':/qt-project.org/styles/commonstyle/images/right-32.png'))
-                self.forBtn.clicked.connect(self.forward)
-                self.toolBar.addWidget(self.forBtn)
-
-                self.writeBtn = QtWidgets.QPushButton('SetUp\n Writer',self.w)
-                self.writeBtn.setMinimumSize(48,48)
-                self.writeBtn.setEnabled(True)
-                self.writeBtn.clicked.connect(self.writer)
-                self.toolBar.addWidget(self.writeBtn)
-
-                self.w.layout_HTML.addWidget(self.w.web_view)
-                if os.path.exists(self.default_setup):
-                    self.w.web_view.load(QtCore.QUrl.fromLocalFile(self.default_setup))
-                else:
-                    self.w.web_view.setHtml(self.html)
-        except Exception as e:
-            print("No default setup file found - {}".format(e))
-
-        # PDF setup page
-        self.PDFView = PDFViewer.PDFView()
-        self.w.layout_PDF.addWidget(self.PDFView)
-        self.PDFView.loadSample('setup_tab')
 
         # set up spindle gauge
         self.w.gauge_spindle.set_max_value(self.max_spindle_rpm)
         self.w.gauge_spindle.set_max_reading(self.max_spindle_rpm / 1000)
         self.w.gauge_spindle.set_threshold(self.min_spindle_rpm)
         self.w.gauge_spindle.set_label("RPM")
-
-        # hide user tab button if no user tabs
-        if self.w.stackedWidget_mainTab.count() == 10:
-            self.w.btn_user.hide()
 
     def init_probe(self):
         probe = INFO.get_error_safe_setting('PROBE', 'USE_PROBE', 'none').lower()
@@ -578,9 +505,7 @@ class HandlerClass:
     def main_tab_changed(self, btn):
         index = btn.property("index")
 
-        if index == TAB_USER:
-            pass
-        elif index == self.w.stackedWidget_mainTab.currentIndex():
+        if index == self.w.stackedWidget_mainTab.currentIndex():
             self.w.stackedWidget_dro.setCurrentIndex(0)
 
         if index is None: return
@@ -862,49 +787,16 @@ class HandlerClass:
     def load_code(self, fname):
         if fname is None: return
         filename, file_extension = os.path.splitext(fname)
-        if not file_extension in (".html", '.pdf'):
-            if not (INFO.program_extension_valid(fname)):
-                self.add_status("Unknown or invalid filename extension {}".format(file_extension), WARNING)
-                return
-            self.w.cmb_gcode_history.addItem(fname)
-            self.w.cmb_gcode_history.setCurrentIndex(self.w.cmb_gcode_history.count() - 1)
-            self.w.cmb_gcode_history.setToolTip(fname)
-            ACTION.OPEN_PROGRAM(fname)
-            self.add_status("Loaded program file : {}".format(fname))
-            self.w.stackedWidget_mainTab.setCurrentIndex(TAB_MAIN)
-            self.w.filemanager.recordBookKeeping()
-
-            # adjust ending to check for related HTML setup files
-            fname = filename+'.html'
-            if os.path.exists(fname):
-                self.w.web_view.load(QtCore.QUrl.fromLocalFile(fname))
-                self.add_status("Loaded HTML file : {}".format(fname))
-            else:
-                self.w.web_view.setHtml(self.html)
-
-            # look for PDF setup files
-            fname = filename+'.pdf'
-            if os.path.exists(fname):
-                self.PDFView.loadView(fname)
-                self.add_status("Loaded PDF file : {}".format(fname))
-            else:
-                self.PDFView.loadSample('setup_tab')
+        if not (INFO.program_extension_valid(fname)):
+            self.add_status("Unknown or invalid filename extension {}".format(file_extension), WARNING)
             return
-
-        if file_extension == ".html":
-            try:
-                self.w.web_view.load(QtCore.QUrl.fromLocalFile(fname))
-                self.add_status("Loaded HTML file : {}".format(fname))
-                self.w.stackedWidget_mainTab.setCurrentIndex(TAB_SETUP)
-                self.w.stackedWidget.setCurrentIndex(0)
-                self.w.btn_setup.setChecked(True)
-            except Exception as e:
-                print("Error loading HTML file : {}".format(e))
-        else:
-            # load PDF into setup page
-            if os.path.exists(fname):
-                self.PDFView.loadView(fname)
-                self.add_status("Loaded PDF file : {}".format(fname))
+        self.w.cmb_gcode_history.addItem(fname)
+        self.w.cmb_gcode_history.setCurrentIndex(self.w.cmb_gcode_history.count() - 1)
+        self.w.cmb_gcode_history.setToolTip(fname)
+        ACTION.OPEN_PROGRAM(fname)
+        self.add_status("Loaded program file : {}".format(fname))
+        self.w.stackedWidget_mainTab.setCurrentIndex(TAB_MAIN)
+        self.w.filemanager.recordBookKeeping()
 
     # NGCGui library overridden function
     # adds an error message to status
@@ -912,40 +804,8 @@ class HandlerClass:
         self.add_status("NGCGUI Path {} not in linuxcnc's SUBROUTINE_PATH INI entry".format(fname), CRITICAL)
         return ''
 
-    def update_gcode_properties(self, props ):
-        # substitute nice looking text:
-        property_names = {
-            'name': "Name:", 'size': "Size:",
-    '       tools': "Tool order:", 'g0': "Rapid distance:",
-            'g1': "Feed distance:", 'g': "Total distance:",
-            'run': "Run time:",'machine_unit_sys':"Machine Unit System:",
-            'x': "X bounds:",'x_zero_rxy':'X @ Zero Rotation:',
-            'y': "Y bounds:",'y_zero_rxy':'Y @ Zero Rotation:',
-            'z': "Z bounds:",'z_zero_rxy':'Z @ Zero Rotation:',
-            'a': "A bounds:", 'b': "B bounds:",
-            'c': "C bounds:",'toollist':'Tool Change List:',
-            'gcode_units':"Gcode Units:"
-        }
-
-        smallmess = mess = ''
-        if props:
-            for i in props:
-                smallmess += '<b>%s</b>: %s<br>' % (property_names.get(i), props[i])
-                mess += '<span style=" font-size:18pt; font-weight:600; color:black;">%s </span>\
-<span style=" font-size:18pt; font-weight:600; color:#aa0000;">%s</span>\
-<br>'% (property_names.get(i), props[i])
-
-        # put the details into the properties page
-        self.w.textedit_properties.setText(mess)
-        return
-        # pop a dialog of the properties
-        msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Information)
-        msg.setText(smallmess)
-        msg.setWindowTitle("Gcode Properties")
-        msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
-        msg.show()
-        retval = msg.exec_()
+    def update_gcode_properties(self, props):
+        pass
 
     def touchoff(self, selector):
         if selector == 'touchplate':
@@ -1054,20 +914,6 @@ class HandlerClass:
             self.timer_on = False
             self.add_status("Run timer stopped at {}".format(self.w.lbl_runtime.text()))
 
-    def back(self):
-        if os.path.exists(self.default_setup):
-            self.w.web_view.load(QtCore.QUrl.fromLocalFile(self.default_setup))
-        else:
-            self.w.web_view.setHtml(self.html)
-        #self.w.web_view.page().triggerAction(QWebEnginePage.Back)
-
-    def forward(self):
-        self.w.web_view.load(QtCore.QUrl.fromLocalFile(self.docs))
-        #self.w.web_view.page().triggerAction(QWebEnginePage.Forward)
-
-    def writer(self):
-        WRITER.show()
-
     def endcolor(self):
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.clear_status_bar)
@@ -1102,11 +948,8 @@ class HandlerClass:
                     TAB_STATUS: (requestedIndex,PAGE_UNCHANGED,SHOW_DRO),
                     TAB_PROBE: (TAB_MAIN,PAGE_GCODE,SHOW_DRO),
                     TAB_CAMVIEW: (requestedIndex,PAGE_UNCHANGED,SHOW_DRO),
-                    TAB_GCODES: (requestedIndex,PAGE_UNCHANGED,SHOW_DRO),
-                    TAB_SETUP: (requestedIndex,PAGE_UNCHANGED,SHOW_DRO),
                     TAB_SETTINGS: (requestedIndex,PAGE_GCODE,SHOW_DRO),
-                    TAB_UTILS: (TAB_MAIN,PAGE_GCODE,SHOW_DRO),
-                    TAB_USER: (requestedIndex,PAGE_UNCHANGED,IGNORE) }
+                    TAB_UTILS: (TAB_MAIN,PAGE_GCODE,SHOW_DRO) }
         else:
             seq = {TAB_MAIN: (requestedIndex,PAGE_GCODE,SHOW_DRO),
                     TAB_FILE: (requestedIndex,PAGE_GCODE,IGNORE),
@@ -1115,11 +958,8 @@ class HandlerClass:
                     TAB_STATUS: (requestedIndex,PAGE_UNCHANGED,SHOW_DRO),
                     TAB_PROBE: (requestedIndex,PAGE_GCODE,SHOW_DRO),
                     TAB_CAMVIEW: (requestedIndex,PAGE_UNCHANGED,IGNORE),
-                    TAB_GCODES: (requestedIndex,PAGE_UNCHANGED,SHOW_DRO),
-                    TAB_SETUP: (requestedIndex,PAGE_UNCHANGED,IGNORE),
                     TAB_SETTINGS: (requestedIndex,PAGE_UNCHANGED,SHOW_DRO),
-                    TAB_UTILS: (requestedIndex,PAGE_UNCHANGED,SHOW_DRO),
-                    TAB_USER: (requestedIndex,PAGE_UNCHANGED,IGNORE) }
+                    TAB_UTILS: (requestedIndex,PAGE_UNCHANGED,SHOW_DRO) }
 
         rtn =  seq.get(requestedIndex)
 
@@ -1168,20 +1008,12 @@ class HandlerClass:
             self.w.btn_gcode_edit.setChecked(False)
             self.w.btn_gcode_edit_clicked(False)
 
-        # user tabs cycle between all user tabs
-        main_current = self.w.stackedWidget_mainTab.currentIndex()
-        if main_index == TAB_USER and main_current >= TAB_USER:
-                next = main_current +1
-                if next == self.w.stackedWidget_mainTab.count():
-                    next = TAB_USER
-                self.w.stackedWidget_mainTab.setCurrentIndex(next)
-        else:
-            # set main tab to adjusted index
-            self.w.stackedWidget_mainTab.setCurrentIndex(main_index)
+        # set main tab to adjusted index
+        self.w.stackedWidget_mainTab.setCurrentIndex(main_index)
 
         # if indexes don't match then request is disallowed
         # give a warning and reset the button check
-        if main_index != requestedIndex and not main_index in(TAB_CAMVIEW,TAB_GCODES,TAB_SETUP):
+        if main_index != requestedIndex and main_index != TAB_CAMVIEW:
             self.add_status("Cannot switch pages while in AUTO mode", WARNING)
             self.w.stackedWidget_mainTab.setCurrentIndex(0)
             self.w.btn_main.setChecked(True)

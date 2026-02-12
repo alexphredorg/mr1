@@ -365,34 +365,12 @@ widget:
                                                           buttonGroup: page_buttonGroup
                                                     - widget:
                                                         class: QPushButton
-                                                        name: btn_gcodes
-                                                        properties:
-                                                          sizePolicy: Fixed/Fixed
-                                                          text: GCODES
-                                                          checkable: true
-                                                          index*: 6
-                                                          fixedSize: 80x40
-                                                        attributes:
-                                                          buttonGroup: page_buttonGroup
-                                                    - widget:
-                                                        class: QPushButton
-                                                        name: btn_setup
-                                                        properties:
-                                                          sizePolicy: Fixed/Fixed
-                                                          text: SETUP
-                                                          checkable: true
-                                                          index*: 7
-                                                          fixedSize: 80x40
-                                                        attributes:
-                                                          buttonGroup: page_buttonGroup
-                                                    - widget:
-                                                        class: QPushButton
                                                         name: btn_settings
                                                         properties:
                                                           sizePolicy: Fixed/Fixed
                                                           text: SETTINGS
                                                           checkable: true
-                                                          index*: 8
+                                                          index*: 6
                                                           fixedSize: 80x40
                                                         attributes:
                                                           buttonGroup: page_buttonGroup
@@ -403,18 +381,7 @@ widget:
                                                           sizePolicy: Fixed/Fixed
                                                           text: UTILS
                                                           checkable: true
-                                                          index*: 9
-                                                          fixedSize: 80x40
-                                                        attributes:
-                                                          buttonGroup: page_buttonGroup
-                                                    - widget:
-                                                        class: QPushButton
-                                                        name: btn_user
-                                                        properties:
-                                                          sizePolicy: Fixed/Fixed
-                                                          text: USER
-                                                          checkable: true
-                                                          index*: 10
+                                                          index*: 7
                                                           fixedSize: 80x40
                                                         attributes:
                                                           buttonGroup: page_buttonGroup
@@ -510,8 +477,7 @@ widget:
                                                                                       name: actiontoolbutton
                                                                                       properties:
                                                                                         toolTip: Hold to save current view
-                                                                                        text: "User
-View"
+                                                                                        text: "User\nView"
                                                                                         checkable: true
                                                                                         autoExclusive: true
                                                                                         autoRaise: false
@@ -1266,8 +1232,7 @@ View"
                                                                                             properties:
                                                                                               sizePolicy: Fixed/Fixed
                                                                                               toolTip: Load selected file
-                                                                                              text: "LOAD
-FILE"
+                                                                                              text: "LOAD\nFILE"
                                                                                               fixedSize: 80x50
                                                                                         - spacer:
                                                                                             name: verticalSpacer_12
@@ -1309,9 +1274,7 @@ FILE"
                                                                                             properties:
                                                                                               sizePolicy: Fixed/Fixed
                                                                                               toolTip: Progran to do auto probe leveling
-                                                                                              text: "LOAD
-GCODE
-RIPPER"
+                                                                                              text: "LOAD\nGCODE\nRIPPER"
                                                                                               indicator_option*: false
                                                                                               indicator_status_option*: false
                                                                                               python_command_option*: false
@@ -1328,8 +1291,7 @@ RIPPER"
                                                                                             properties:
                                                                                               sizePolicy: Fixed/Fixed
                                                                                               toolTip: Edit currently loaded gcode file
-                                                                                              text: "EDIT
-GCODE"
+                                                                                              text: "EDIT\nGCODE"
                                                                                               checkable: true
                                                                                               python_command_option*: false
                                                                                               fixedSize: 80x50
@@ -1397,8 +1359,7 @@ GCODE"
                                                                                       name: action_zero_rotation
                                                                                       properties:
                                                                                         sizePolicy: Fixed/Fixed
-                                                                                        text: "ZERO
-ROTATION"
+                                                                                        text: "ZERO\nROTATION"
                                                                                         zero_zrot_action*: true
                                                                                         fixedSize: 80x50
                                                                                   - widget:
@@ -1494,16 +1455,14 @@ ROTATION"
                                                                                       properties:
                                                                                         minimumSize: 80x50
                                                                                         toolTip: Tool Change to selected tool
-                                                                                        text: "Tn M6
-Tool Change"
+                                                                                        text: "Tn M6\nTool Change"
                                                                                   - widget:
                                                                                       class: QPushButton
                                                                                       name: btn_m61
                                                                                       properties:
                                                                                         sizePolicy: Fixed/Fixed
                                                                                         toolTip: Change Tool without Toolchange
-                                                                                        text: "M61 Qn
-Set Tool"
+                                                                                        text: "M61 Qn\nSet Tool"
                                                                                         fixedSize: 80x50
                                                                                   - spacer:
                                                                                       name: verticalSpacer
@@ -1591,10 +1550,8 @@ Set Tool"
                                                                                         checked_state_text_option*: true
                                                                                         python_command_option*: true
                                                                                         on_color*: "#00ff00"
-                                                                                        true_state_string*: "SYSTEM
-LOG"
-                                                                                        false_state_string*: "MACHINE
-LOG"
+                                                                                        true_state_string*: "SYSTEM\nLOG"
+                                                                                        false_state_string*: "MACHINE\nLOG"
                                                                                         true_python_cmd_string*: INSTANCE.stackedWidget_log.setCurrentIndex(1)
                                                                                         false_python_cmd_string*: INSTANCE.stackedWidget_log.setCurrentIndex(0)
                                                                                         fixedSize: 80x50
@@ -1603,8 +1560,7 @@ LOG"
                                                                                       name: btn_clear_status
                                                                                       properties:
                                                                                         sizePolicy: Fixed/Fixed
-                                                                                        text: "CLEAR
-STATUS"
+                                                                                        text: "CLEAR\nSTATUS"
                                                                                         fixedSize: 80x50
                                                                                   - widget:
                                                                                       class: QPushButton
@@ -1612,8 +1568,7 @@ STATUS"
                                                                                       properties:
                                                                                         sizePolicy: Fixed/Fixed
                                                                                         toolTip: Save status to file
-                                                                                        text: "SAVE
-TO FILE"
+                                                                                        text: "SAVE\nTO FILE"
                                                                                         fixedSize: 80x50
                                                                                   - spacer:
                                                                                       name: verticalSpacer_10
@@ -1625,16 +1580,13 @@ TO FILE"
                                                                                       name: btn_select_log_2
                                                                                       properties:
                                                                                         sizePolicy: Fixed/Fixed
-                                                                                        text: "Recall
-Error"
+                                                                                        text: "Recall\nError"
                                                                                         indicator_option*: false
                                                                                         checked_state_text_option*: false
                                                                                         python_command_option*: true
                                                                                         on_color*: "#00ff00"
-                                                                                        true_state_string*: "SYSTEM
-LOG"
-                                                                                        false_state_string*: "MACHINE
-LOG"
+                                                                                        true_state_string*: "SYSTEM\nLOG"
+                                                                                        false_state_string*: "MACHINE\nLOG"
                                                                                         true_python_cmd_string*: INSTANCE._NOTICE.show_last()
                                                                                         fixedSize: 80x50
                                                           - widget:
@@ -1738,113 +1690,6 @@ LOG"
                                                                                         text: Save
                                                                                         python_command_option*: true
                                                                                         true_python_cmd_string*: INSTANCE.camview.saveImage()
-                                                          - widget:
-                                                              class: QWidget
-                                                              name: stackedWidget_mainTabPage7
-                                                              children:
-                                                                - layout:
-                                                                    class: QHBoxLayout
-                                                                    name: horizontalLayout_15
-                                                                    properties:
-                                                                      spacing: 4
-                                                                      margins: [4, 0, 4, 0]
-                                                                    items:
-                                                                      - layout:
-                                                                          class: QVBoxLayout
-                                                                          name: verticalLayout_56
-                                                                          properties:
-                                                                            spacing: 0
-                                                                          items:
-                                                                            - widget:
-                                                                                class: QListWidget
-                                                                                name: gcode_list
-                                                                                properties:
-                                                                                  frameShape: QFrame::Box
-                                                                                  frameShadow: QFrame::Raised
-                                                                                  selectionMode: QAbstractItemView::SingleSelection
-                                                                      - layout:
-                                                                          class: QVBoxLayout
-                                                                          name: verticalLayout_55
-                                                                          properties:
-                                                                            spacing: 2
-                                                                            margins: 0
-                                                                          items:
-                                                                            - widget:
-                                                                                class: QLineEdit
-                                                                                name: gcode_parameters
-                                                                                properties:
-                                                                                  minimumSize: 0x30
-                                                                                  baseSize: 0x30
-                                                                                  readOnly: true
-                                                                                  placeholderText: Parameters
-                                                                            - widget:
-                                                                                class: QPlainTextEdit
-                                                                                name: gcode_description
-                                                                                properties:
-                                                                                  frameShape: QFrame::Box
-                                                                                  frameShadow: QFrame::Raised
-                                                          - widget:
-                                                              class: QWidget
-                                                              name: stackedWidget_mainTabPage8
-                                                              children:
-                                                                - layout:
-                                                                    class: QHBoxLayout
-                                                                    name: horizontalLayout_41
-                                                                    properties:
-                                                                      spacing: 4
-                                                                      margins: [4, 0, 4, 0]
-                                                                    items:
-                                                                      - layout:
-                                                                          class: QVBoxLayout
-                                                                          name: layout_setup
-                                                                          properties:
-                                                                            spacing: 4
-                                                                          items:
-                                                                            - widget:
-                                                                                class: QTabWidget
-                                                                                name: tabWidget_setup
-                                                                                properties:
-                                                                                  sizePolicy: Expanding/Preferred
-                                                                                  currentIndex: 0
-                                                                                children:
-                                                                                  - widget:
-                                                                                      class: QWidget
-                                                                                      name: tabHTML
-                                                                                      attributes:
-                                                                                        title: HTML
-                                                                                      children:
-                                                                                        - layout:
-                                                                                            class: QVBoxLayout
-                                                                                            name: layout_HTML
-                                                                                            properties:
-                                                                                              margins: 0
-                                                                                  - widget:
-                                                                                      class: QWidget
-                                                                                      name: tabPDF
-                                                                                      attributes:
-                                                                                        title: PDF
-                                                                                      children:
-                                                                                        - layout:
-                                                                                            class: QHBoxLayout
-                                                                                            name: layout_PDF
-                                                                                            properties:
-                                                                                              margins: 0
-                                                                                  - widget:
-                                                                                      class: QWidget
-                                                                                      name: tab_properties
-                                                                                      attributes:
-                                                                                        title: PROPERTIES
-                                                                                      children:
-                                                                                        - layout:
-                                                                                            class: QVBoxLayout
-                                                                                            name: layout_properties
-                                                                                            properties:
-                                                                                              spacing: 0
-                                                                                              margins: 0
-                                                                                            items:
-                                                                                              - widget:
-                                                                                                  class: QTextEdit
-                                                                                                  name: textedit_properties
                                                           - widget:
                                                               class: QWidget
                                                               name: stackedWidget_mainTabPage0
@@ -2241,7 +2086,7 @@ LOG"
                                                                                                   properties:
                                                                                                     sizePolicy: Preferred/Fixed
                                                                                                     toolTip: Height of tool touch plate
-                                                                                                    text: TOUCH PLATE HEIGHT 
+                                                                                                    text: TOUCH PLATE HEIGHT
                                                                                                     alignment: Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter
                                                                                                     fixedSize: 180x30
                                                                                               - widget:
@@ -2892,8 +2737,7 @@ LOG"
                                                                 minimumSize: 210x55
                                                                 maximumSize: 210x16777215
                                                                 focusPolicy: Qt::NoFocus
-                                                                text: "CYCLE START
-LINE 0"
+                                                                text: "CYCLE START\nLINE 0"
                                                                 indicator_option*: true
                                                                 indicator_status_option*: true
                                                                 on_color*: "#00ff00"
@@ -2938,8 +2782,7 @@ LINE 0"
                                                                 maximumSize: 100x16777215
                                                                 focusPolicy: Qt::NoFocus
                                                                 toolTip: Load Last Recorded File
-                                                                text: "RELOAD
-FILE"
+                                                                text: "RELOAD\nFILE"
                                                                 indicator_option*: false
                                                                 indicator_HAL_pin_option*: false
                                                                 checked_state_text_option*: false
@@ -2991,8 +2834,7 @@ FILE"
                                                                 minimumSize: 90x55
                                                                 maximumSize: 100x16777215
                                                                 focusPolicy: Qt::NoFocus
-                                                                text: "OPT
-STOP"
+                                                                text: "OPT\nSTOP"
                                                                 checkable: true
                                                                 indicator_option*: true
                                                                 indicator_HAL_pin_option*: false
@@ -3047,8 +2889,7 @@ STOP"
                                                                 minimumSize: 90x55
                                                                 maximumSize: 100x16777215
                                                                 focusPolicy: Qt::NoFocus
-                                                                text: "OPT
-BLOCK"
+                                                                text: "OPT\nBLOCK"
                                                                 checkable: true
                                                                 indicator_option*: true
                                                                 indicator_HAL_pin_option*: false
@@ -3223,8 +3064,7 @@ BLOCK"
                                                                       sizePolicy: Preferred/Fixed
                                                                       minimumSize: 120x35
                                                                       toolTip: Enable workpiece height input
-                                                                      text: "WORKPIECE
-HEIGHT"
+                                                                      text: "WORKPIECE\nHEIGHT"
                                                                       checked: true
                                                                 - widget:
                                                                     class: QLineEdit
@@ -3246,8 +3086,7 @@ HEIGHT"
                                                                     name: action_g30
                                                                     properties:
                                                                       sizePolicy: Preferred/Fixed
-                                                                      text: "GO TO
-G30"
+                                                                      text: "GO TO\nG30"
                                                                       indicator_option*: false
                                                                       indicator_HAL_pin_option*: false
                                                                       indicator_status_option*: false
@@ -3305,8 +3144,7 @@ G30"
                                                                     class: ActionButton
                                                                     name: action_g28
                                                                     properties:
-                                                                      text: "GO TO
-G28"
+                                                                      text: "GO TO\nG28"
                                                                       mdi_action*: false
                                                                       mdi_command_action*: true
                                                                       command_text_string*: g28
@@ -3321,8 +3159,7 @@ G28"
                                                                     class: ActionButton
                                                                     name: action_set_g30
                                                                     properties:
-                                                                      text: "SET
-G30"
+                                                                      text: "SET\nG30"
                                                                       mdi_action*: false
                                                                       mdi_command_action*: true
                                                                       command_text_string*: G30.1
@@ -3331,8 +3168,7 @@ G30"
                                                                     class: ActionButton
                                                                     name: action_set_g28
                                                                     properties:
-                                                                      text: "SET
-G28"
+                                                                      text: "SET\nG28"
                                                                       mdi_action*: false
                                                                       mdi_command_action*: true
                                                                       command_text_string*: G28.1
@@ -3349,8 +3185,7 @@ G28"
                                                                     properties:
                                                                       sizePolicy: Preferred/Fixed
                                                                       toolTip: Tool touchoff to tool sensor
-                                                                      text: "TOOL
-SENSOR"
+                                                                      text: "TOOL\nSENSOR"
                                                                       sensor*: _toolsensor_
                                                                       fixedSize: 90x48
                                                                 - widget:
@@ -3359,8 +3194,7 @@ SENSOR"
                                                                     properties:
                                                                       sizePolicy: Preferred/Fixed
                                                                       toolTip: Tool touchoff to touchplate
-                                                                      text: "TOUCH
-PLATE"
+                                                                      text: "TOUCH\nPLATE"
                                                                       sensor*: _touchplate_
                                                                       fixedSize: 90x48
                                                           - layout:
@@ -3375,8 +3209,7 @@ PLATE"
                                                                     properties:
                                                                       sizePolicy: Preferred/Fixed
                                                                       toolTip: Go to Tool Sensor location
-                                                                      text: "GO TO
-SENSOR"
+                                                                      text: "GO TO\nSENSOR"
                                                                       location*: sensor
                                                                       fixedSize: 90x48
                                                                 - widget:
@@ -3385,8 +3218,7 @@ SENSOR"
                                                                     properties:
                                                                       sizePolicy: Preferred/Fixed
                                                                       toolTip: Go to Home position
-                                                                      text: "GO
-HOME"
+                                                                      text: "GO\nHOME"
                                                                       location*: home
                                                                       fixedSize: 90x48
                                               - widget:
@@ -4131,8 +3963,7 @@ HOME"
                                                                                                     sizePolicy: Preferred/Expanding
                                                                                                     minimumSize: 70x50
                                                                                                     maximumSize: 70x54
-                                                                                                    text: "GO TO
-ZERO"
+                                                                                                    text: "GO TO\nZERO"
                                                                                                     indicator_option*: false
                                                                                                     indicator_HAL_pin_option*: false
                                                                                                     on_color*: "#00ff00"
@@ -4187,8 +4018,7 @@ ZERO"
                                                                       sizePolicy: Preferred/Fixed
                                                                       minimumSize: 30x20
                                                                       maximumSize: 16777215x20
-                                                                      styleSheet: "    font: 8pt \"Lato Heavy\";
-"
+                                                                      styleSheet: "    font: 8pt \"Lato Heavy\";\n"
                                                                       frameShape: QFrame::WinPanel
                                                                       frameShadow: QFrame::Sunken
                                                                       text: G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0 G0
@@ -4204,8 +4034,7 @@ ZERO"
                                                                       sizePolicy: Preferred/Fixed
                                                                       minimumSize: 30x20
                                                                       maximumSize: 16777215x20
-                                                                      styleSheet: "    font: 8pt \"Lato Heavy\";
-"
+                                                                      styleSheet: "    font: 8pt \"Lato Heavy\";\n"
                                                                       frameShape: QFrame::WinPanel
                                                                       frameShadow: QFrame::Sunken
                                                                       text: M0 M0 M0 M0 M0 M0 M0 M0 M0
@@ -4325,6 +4154,16 @@ ZERO"
                                                                                                     alignment: Qt::AlignCenter
                                                                                                     readOnly: true
                                                                                                     fixedSize: 60x26
+                                                                                              - widget:
+                                                                                                  class: LED
+                                                                                                  name: hal_led_maxv_ovr_selected
+                                                                                                  properties:
+                                                                                                    sizePolicy: Fixed/Fixed
+                                                                                                    pin_name*: led-maxv-override
+                                                                                                    diameter: 15
+                                                                                                    color: "#00ff00"
+                                                                                                    off_color*: "#000000"
+                                                                                                    fixedSize: 24x24
                                                                             - widget:
                                                                                 class: QWidget
                                                                                 name: widget_rapid_ovr
@@ -4406,6 +4245,16 @@ ZERO"
                                                                                                     rapid_override_status*: true
                                                                                                     jograte_status*: false
                                                                                                     fixedSize: 60x26
+                                                                                              - widget:
+                                                                                                  class: LED
+                                                                                                  name: hal_led_rapid_ovr_selected
+                                                                                                  properties:
+                                                                                                    sizePolicy: Fixed/Fixed
+                                                                                                    pin_name*: led-rapid-override
+                                                                                                    diameter: 15
+                                                                                                    color: "#00ff00"
+                                                                                                    off_color*: "#000000"
+                                                                                                    fixedSize: 24x24
                                                                             - widget:
                                                                                 class: QWidget
                                                                                 name: widget_feed_ovr
@@ -4973,8 +4822,7 @@ ZERO"
                                                                       minimumSize: 60x30
                                                                       maximumSize: 58x30
                                                                       font: 10pt
-                                                                      text: "JOG
-LINEAR"
+                                                                      text: "JOG\nLINEAR"
                                                                       alignment: Qt::AlignCenter
                                                                 - alignment: Qt::AlignHCenter
                                                                   widget:
@@ -5040,8 +4888,7 @@ LINEAR"
                                                                       minimumSize: 60x30
                                                                       maximumSize: 58x30
                                                                       font: 10pt
-                                                                      text: "JOG
-ANGULAR"
+                                                                      text: "JOG\nANGULAR"
                                                                       alignment: Qt::AlignCenter
                                                                 - alignment: Qt::AlignHCenter
                                                                   widget:

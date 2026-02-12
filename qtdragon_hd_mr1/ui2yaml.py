@@ -519,8 +519,8 @@ def yaml_format_value(value, indent=0):
         return s
     elif isinstance(value, str):
         if yaml_needs_quoting(value):
-            # Use double quotes, escape embedded quotes
-            escaped = value.replace('\\', '\\\\').replace('"', '\\"')
+            # Use double quotes, escape embedded quotes and newlines
+            escaped = value.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
             return f'"{escaped}"'
         return value
     elif isinstance(value, list):
