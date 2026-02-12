@@ -392,6 +392,28 @@ widget:
                                                           sizeHint*: 40x20
                                                     - widget:
                                                         class: ActionButton
+                                                        name: actionbutton_halshow_2
+                                                        properties:
+                                                          sizePolicy: Fixed/Fixed
+                                                          toolTip: Open HAL Show
+                                                          text: HAL SHOW
+                                                          launch_halshow_action*: true
+                                                          template_label_option*: false
+                                                          joint_number*: 0
+                                                          incr_imperial_number*: 0.01
+                                                          incr_mm_number*: 0.025
+                                                          incr_angular_number*: -1
+                                                          toggle_float_option*: false
+                                                          float_num*: 100
+                                                          float_alt_num*: 50
+                                                          view_type_string*: P
+                                                          ini_mdi_number*: 0
+                                                          textTemplate*: "%1.3f in"
+                                                          alt_textTemplate*: "%1.2f mm"
+                                                          actionName*: tool.halshow
+                                                          fixedSize: 80x40
+                                                    - widget:
+                                                        class: ActionButton
                                                         name: action_exit
                                                         properties:
                                                           sizePolicy: Fixed/Fixed
