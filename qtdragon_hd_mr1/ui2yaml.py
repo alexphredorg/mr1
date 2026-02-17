@@ -375,7 +375,12 @@ def process_layout_item(item_elem):
     spacer = item_elem.find("spacer")
 
     if widget is not None:
-        item["widget"] = process_widget(widget)
+        widget_data = process_widget(widget)
+        macro = _detect_override_slider(widget_data)
+        if macro is not None:
+            item["override_slider"] = macro
+        else:
+            item["widget"] = widget_data
     elif layout is not None:
         item["layout"] = process_layout(layout)
     elif spacer is not None:
@@ -394,6 +399,197 @@ def process_spacer(elem):
     if props:
         result["properties"] = props
     return result
+
+
+# ── Override slider macro detection ─────────────────────────────────────
+
+# Structural defaults that get stripped when compacting to override_slider.
+# Must match the expansion defaults in yaml2ui.py.
+
+_OVERRIDE_SLIDER_DEFAULTS = {
+    'label': {
+        'minimumSize': '0x20',
+        'maximumSize': '16777215x20',
+        'alignment': 'Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter',
+        'margin': 0,
+        'indent': 40,
+    },
+    'btn50': {
+        'sizePolicy': 'Fixed/Fixed',
+        'text': '50',
+        'fixedSize': '40x30',
+    },
+    'btn100': {
+        'sizePolicy': 'Fixed/Fixed',
+        'text': '100',
+        'fixedSize': '40x30',
+    },
+    'slider': {
+        'sizePolicy': 'Preferred/Fixed',
+        'minimumSize': '100x30',
+        'maximumSize': '16777215x30',
+        'orientation': 'Qt::Horizontal',
+        'tickInterval': 10,
+    },
+    'status_StatusLabel': {
+        'sizePolicy': 'Fixed/Fixed',
+        'alignment': 'Qt::AlignCenter',
+        'fixedSize': '60x26',
+        'frameShape': 'QFrame::WinPanel',
+        'frameShadow': 'QFrame::Sunken',
+        'lineWidth': 1,
+    },
+    'status_QLineEdit': {
+        'sizePolicy': 'Fixed/Fixed',
+        'alignment': 'Qt::AlignCenter',
+        'fixedSize': '60x26',
+        'mouseTracking': True,
+        'maxLength': 5,
+        'frame': True,
+        'readOnly': True,
+    },
+    'led': {
+        'sizePolicy': 'Fixed/Fixed',
+        'diameter': 15,
+        'color': '#00ff00',
+        'off_color*': '#000000',
+        'fixedSize': '24x24',
+    },
+}
+
+
+def _strip_defaults(props, defaults):
+    """Return a new dict with structural default values removed."""
+    result = {}
+    for k, v in props.items():
+        if k in defaults and v == defaults[k]:
+            continue
+        result[k] = v
+    return result
+
+
+def _detect_override_slider(widget_data):
+    """Check if a widget matches the override_slider pattern.
+
+    Pattern: QWidget(native) > QVBoxLayout(2 items) >
+             QLabel + QHBoxLayout(5 items: button, StatusSlider, button,
+                                   StatusLabel/QLineEdit, LED)
+
+    Returns a compact macro dict or None.
+    """
+    if widget_data.get('class') != 'QWidget' or not widget_data.get('native'):
+        return None
+
+    children = widget_data.get('children', [])
+    if len(children) != 1 or 'layout' not in children[0]:
+        return None
+
+    vlayout = children[0]['layout']
+    if vlayout.get('class') != 'QVBoxLayout':
+        return None
+
+    items = vlayout.get('items', [])
+    if len(items) != 2:
+        return None
+    if 'widget' not in items[0] or 'layout' not in items[1]:
+        return None
+
+    label_widget = items[0]['widget']
+    hlayout = items[1]['layout']
+
+    if label_widget.get('class') != 'QLabel':
+        return None
+    if hlayout.get('class') != 'QHBoxLayout':
+        return None
+
+    hitems = hlayout.get('items', [])
+    if len(hitems) != 5:
+        return None
+    if any('widget' not in hi for hi in hitems):
+        return None
+
+    w_btn50 = hitems[0]['widget']
+    w_slider = hitems[1]['widget']
+    w_btn100 = hitems[2]['widget']
+    w_status = hitems[3]['widget']
+    w_led = hitems[4]['widget']
+
+    if w_slider.get('class') != 'StatusSlider':
+        return None
+    if w_led.get('class') != 'LED':
+        return None
+
+    status_class = w_status.get('class', '')
+    if status_class not in ('StatusLabel', 'QLineEdit'):
+        return None
+
+    btn50_class = w_btn50.get('class', '')
+    btn100_class = w_btn100.get('class', '')
+    if btn50_class not in ('QPushButton', 'ActionButton'):
+        return None
+    if btn100_class not in ('QPushButton', 'ActionButton'):
+        return None
+
+    # Build the macro dict
+    macro = {}
+    macro['widget'] = widget_data.get('name', '')
+    macro['vlayout'] = vlayout.get('name', '')
+    macro['hlayout'] = hlayout.get('name', '')
+
+    # Label
+    label_props = label_widget.get('properties', {})
+    label_stripped = _strip_defaults(label_props, _OVERRIDE_SLIDER_DEFAULTS['label'])
+    label_macro = {'name': label_widget.get('name', '')}
+    # Put text first for readability
+    if 'text' in label_stripped:
+        label_macro['text'] = label_stripped.pop('text')
+    label_macro.update(label_stripped)
+    macro['label'] = label_macro
+
+    # btn50
+    btn50_props = w_btn50.get('properties', {})
+    btn50_stripped = _strip_defaults(btn50_props, _OVERRIDE_SLIDER_DEFAULTS['btn50'])
+    btn50_macro = {}
+    if btn50_class != 'QPushButton':
+        btn50_macro['class'] = btn50_class
+    btn50_macro['name'] = w_btn50.get('name', '')
+    btn50_macro.update(btn50_stripped)
+    macro['btn50'] = btn50_macro
+
+    # slider
+    slider_props = w_slider.get('properties', {})
+    slider_stripped = _strip_defaults(slider_props, _OVERRIDE_SLIDER_DEFAULTS['slider'])
+    slider_macro = {'name': w_slider.get('name', '')}
+    slider_macro.update(slider_stripped)
+    macro['slider'] = slider_macro
+
+    # btn100
+    btn100_props = w_btn100.get('properties', {})
+    btn100_stripped = _strip_defaults(btn100_props, _OVERRIDE_SLIDER_DEFAULTS['btn100'])
+    btn100_macro = {}
+    if btn100_class != 'QPushButton':
+        btn100_macro['class'] = btn100_class
+    btn100_macro['name'] = w_btn100.get('name', '')
+    btn100_macro.update(btn100_stripped)
+    macro['btn100'] = btn100_macro
+
+    # status
+    status_props = w_status.get('properties', {})
+    status_stripped = _strip_defaults(
+        status_props, _OVERRIDE_SLIDER_DEFAULTS[f'status_{status_class}'])
+    status_macro = {'class': status_class}
+    status_macro['name'] = w_status.get('name', '')
+    status_macro.update(status_stripped)
+    macro['status'] = status_macro
+
+    # LED
+    led_props = w_led.get('properties', {})
+    led_stripped = _strip_defaults(led_props, _OVERRIDE_SLIDER_DEFAULTS['led'])
+    led_macro = {'name': w_led.get('name', '')}
+    led_macro.update(led_stripped)
+    macro['led'] = led_macro
+
+    return macro
 
 
 # ── Top-level sections ──────────────────────────────────────────────────
@@ -720,9 +916,13 @@ def verify(ui_path, yaml_data):
         return count
 
     yaml_widgets = count_yaml_key(yaml_data, "widget")
-    # Subtract 1 for the top-level "widget" key which wraps the root widget
-    # Actually, count_yaml_key counts dict keys, each representing one widget
     yaml_layouts = count_yaml_key(yaml_data, "layout")
+    # Each override_slider macro replaces 7 widgets and 2 layouts.
+    # The macro dict itself has a 'widget' key (name string) that gets counted,
+    # so the net widget adjustment is 6 (7 replaced minus 1 counted).
+    override_count = count_yaml_key(yaml_data, "override_slider")
+    yaml_widgets += override_count * 6
+    yaml_layouts += override_count * 2
     yaml_connections = len(yaml_data.get("connections", []))
     yaml_custom_widgets = len(yaml_data.get("customwidgets", []))
 

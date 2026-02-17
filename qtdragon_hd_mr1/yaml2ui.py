@@ -879,6 +879,198 @@ def _emit_spacer(spacer_data, indent, lines):
     lines.append(f'{sp}</spacer>')
 
 
+# ── Override slider macro expansion ────────────────────────────────────
+
+# Structural defaults for each override_slider component.
+# For each sub-component, these properties are always the same across all
+# override slider instances and are merged in during expansion.
+
+_OVERRIDE_SLIDER_DEFAULTS = {
+    'label': {
+        'minimumSize': '0x20',
+        'maximumSize': '16777215x20',
+        'alignment': 'Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter',
+        'margin': 0,
+        'indent': 40,
+    },
+    'btn50': {
+        'sizePolicy': 'Fixed/Fixed',
+        'text': '50',
+        'fixedSize': '40x30',
+    },
+    'btn100': {
+        'sizePolicy': 'Fixed/Fixed',
+        'text': '100',
+        'fixedSize': '40x30',
+    },
+    'slider': {
+        'sizePolicy': 'Preferred/Fixed',
+        'minimumSize': '100x30',
+        'maximumSize': '16777215x30',
+        'orientation': 'Qt::Horizontal',
+        'tickInterval': 10,
+    },
+    'status_StatusLabel': {
+        'sizePolicy': 'Fixed/Fixed',
+        'alignment': 'Qt::AlignCenter',
+        'fixedSize': '60x26',
+        'frameShape': 'QFrame::WinPanel',
+        'frameShadow': 'QFrame::Sunken',
+        'lineWidth': 1,
+    },
+    'status_QLineEdit': {
+        'sizePolicy': 'Fixed/Fixed',
+        'alignment': 'Qt::AlignCenter',
+        'fixedSize': '60x26',
+        'mouseTracking': True,
+        'maxLength': 5,
+        'frame': True,
+        'readOnly': True,
+    },
+    'led': {
+        'sizePolicy': 'Fixed/Fixed',
+        'diameter': 15,
+        'color': '#00ff00',
+        'off_color*': '#000000',
+        'fixedSize': '24x24',
+    },
+}
+
+
+def _expand_override_slider(macro):
+    """Expand an override_slider macro dict into a full widget dict."""
+
+    def _merge_props(defaults_key, user_block):
+        """Build properties dict: start with defaults, overlay user keys."""
+        props = dict(_OVERRIDE_SLIDER_DEFAULTS.get(defaults_key, {}))
+        for k, v in user_block.items():
+            if k in ('class', 'name'):
+                continue
+            props[k] = v
+        return props
+
+    # btn50
+    btn50_block = macro.get('btn50', {})
+    btn50_widget = {
+        'class': btn50_block.get('class', 'QPushButton'),
+        'name': btn50_block.get('name', ''),
+        'properties': _merge_props('btn50', btn50_block),
+    }
+
+    # slider
+    slider_block = macro.get('slider', {})
+    slider_widget = {
+        'class': slider_block.get('class', 'StatusSlider'),
+        'name': slider_block.get('name', ''),
+        'properties': _merge_props('slider', slider_block),
+    }
+
+    # btn100
+    btn100_block = macro.get('btn100', {})
+    btn100_widget = {
+        'class': btn100_block.get('class', 'QPushButton'),
+        'name': btn100_block.get('name', ''),
+        'properties': _merge_props('btn100', btn100_block),
+    }
+
+    # status — defaults depend on class
+    status_block = macro.get('status', {})
+    status_class = status_block.get('class', 'StatusLabel')
+    status_widget = {
+        'class': status_class,
+        'name': status_block.get('name', ''),
+        'properties': _merge_props(f'status_{status_class}', status_block),
+    }
+
+    # LED
+    led_block = macro.get('led', {})
+    led_widget = {
+        'class': led_block.get('class', 'LED'),
+        'name': led_block.get('name', ''),
+        'properties': _merge_props('led', led_block),
+    }
+
+    # label
+    label_block = macro.get('label', {})
+    label_widget = {
+        'class': 'QLabel',
+        'name': label_block.get('name', ''),
+        'properties': _merge_props('label', label_block),
+    }
+
+    # HBoxLayout with 5 items
+    hlayout = {
+        'class': 'QHBoxLayout',
+        'name': macro.get('hlayout', ''),
+        'properties': {'spacing': 4},
+        'items': [
+            {'widget': btn50_widget},
+            {'widget': slider_widget},
+            {'widget': btn100_widget},
+            {'widget': status_widget},
+            {'widget': led_widget},
+        ],
+    }
+
+    # VBoxLayout with label + hlayout
+    vlayout = {
+        'class': 'QVBoxLayout',
+        'name': macro.get('vlayout', ''),
+        'properties': {'spacing': 0, 'margins': 0},
+        'items': [
+            {'widget': label_widget},
+            {'layout': hlayout},
+        ],
+    }
+
+    # Outer QWidget
+    return {
+        'class': 'QWidget',
+        'name': macro.get('widget', ''),
+        'native': True,
+        'children': [
+            {'layout': vlayout},
+        ],
+    }
+
+
+def _expand_macros(data):
+    """Recursively expand all macros in the parsed YAML tree in-place."""
+    widget = data.get('widget')
+    if isinstance(widget, dict):
+        _expand_macros_in_widget(widget)
+    return data
+
+
+def _expand_macros_in_widget(widget_data):
+    """Walk a widget's children, expanding macros."""
+    for child in widget_data.get('children', []):
+        if 'widget' in child and isinstance(child['widget'], dict):
+            _expand_macros_in_widget(child['widget'])
+        elif 'layout' in child and isinstance(child['layout'], dict):
+            _expand_macros_in_layout(child['layout'])
+
+
+def _expand_macros_in_layout(layout_data):
+    """Walk a layout's items, expanding override_slider macros."""
+    items = layout_data.get('items', [])
+    for i, item in enumerate(items):
+        if 'override_slider' in item:
+            macro = item['override_slider']
+            expanded = _expand_override_slider(macro)
+            # Preserve grid/alignment attributes from the layout item
+            new_item = {}
+            for k in ('row', 'column', 'rowspan', 'colspan', 'alignment'):
+                if k in item:
+                    new_item[k] = item[k]
+            new_item['widget'] = expanded
+            items[i] = new_item
+        elif 'widget' in item and isinstance(item['widget'], dict):
+            _expand_macros_in_widget(item['widget'])
+        elif 'layout' in item and isinstance(item['layout'], dict):
+            _expand_macros_in_layout(item['layout'])
+
+
 # ── Verification ───────────────────────────────────────────────────────
 
 def verify_roundtrip(original_ui, roundtrip_ui):
@@ -1007,6 +1199,7 @@ def main():
         yaml_text = f.read()
 
     data = parse_yaml(yaml_text)
+    _expand_macros(data)
     xml_text = build_ui_xml(data)
 
     if args.output:

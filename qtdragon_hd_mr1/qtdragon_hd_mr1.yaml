@@ -1195,7 +1195,7 @@ widget:
                                                                                                           sizePolicy: Preferred/Fixed
                                                                                                           minimumSize: 0x24
                                                                                                           maximumSize: 16777215x24
-                                                                                                          text: EOFFSET LTD
+                                                                                                          text: SOFT LIMITS
                                                                                                           alignment: Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter
                                                                                                           margin: 0
                                                                                                           indent: 4
@@ -4105,366 +4105,163 @@ widget:
                                                                             spacing: 4
                                                                             margins: 4
                                                                           items:
-                                                                            - widget:
-                                                                                class: QWidget
-                                                                                name: widget_max_ovr
-                                                                                native: true
-                                                                                children:
-                                                                                  - layout:
-                                                                                      class: QVBoxLayout
-                                                                                      name: verticalLayout_40
-                                                                                      properties:
-                                                                                        spacing: 0
-                                                                                        margins: 0
-                                                                                      items:
-                                                                                        - widget:
-                                                                                            class: QLabel
-                                                                                            name: label_28
-                                                                                            properties:
-                                                                                              minimumSize: 0x20
-                                                                                              maximumSize: 16777215x20
-                                                                                              text: MAX VELOCITY
-                                                                                              alignment: Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter
-                                                                                              margin: 0
-                                                                                              indent: 40
-                                                                                        - layout:
-                                                                                            class: QHBoxLayout
-                                                                                            name: horizontalLayout_39
-                                                                                            properties:
-                                                                                              spacing: 4
-                                                                                            items:
-                                                                                              - widget:
-                                                                                                  class: QPushButton
-                                                                                                  name: btn_maxv_ovr_50
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    text: "50"
-                                                                                                    fixedSize: 40x30
-                                                                                              - widget:
-                                                                                                  class: StatusSlider
-                                                                                                  name: slider_maxv_ovr
-                                                                                                  properties:
-                                                                                                    sizePolicy: Preferred/Fixed
-                                                                                                    minimumSize: 100x30
-                                                                                                    maximumSize: 16777215x30
-                                                                                                    toolTip: Adjust max velocity override
-                                                                                                    maximum: 3600
-                                                                                                    singleStep: 10
-                                                                                                    pageStep: 100
-                                                                                                    value: 3600
-                                                                                                    orientation: Qt::Horizontal
-                                                                                                    tickInterval: 10
-                                                                                                    pin_name*: slider-override-maxv
-                                                                                                    rapid_rate*: false
-                                                                                                    max_velocity_rate*: true
-                                                                                              - widget:
-                                                                                                  class: QPushButton
-                                                                                                  name: btn_maxv_ovr_100
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    text: "100"
-                                                                                                    fixedSize: 40x30
-                                                                                              - widget:
-                                                                                                  class: QLineEdit
-                                                                                                  name: lbl_maxv_percent
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    mouseTracking: true
-                                                                                                    text: 100 %
-                                                                                                    maxLength: 5
-                                                                                                    frame: true
-                                                                                                    alignment: Qt::AlignCenter
-                                                                                                    readOnly: true
-                                                                                                    fixedSize: 60x26
-                                                                                              - widget:
-                                                                                                  class: LED
-                                                                                                  name: hal_led_maxv_ovr_selected
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    pin_name*: led-maxv-override
-                                                                                                    diameter: 15
-                                                                                                    color: "#00ff00"
-                                                                                                    off_color*: "#000000"
-                                                                                                    fixedSize: 24x24
-                                                                            - widget:
-                                                                                class: QWidget
-                                                                                name: widget_rapid_ovr
-                                                                                native: true
-                                                                                children:
-                                                                                  - layout:
-                                                                                      class: QVBoxLayout
-                                                                                      name: verticalLayout_4
-                                                                                      properties:
-                                                                                        spacing: 0
-                                                                                        margins: 0
-                                                                                      items:
-                                                                                        - widget:
-                                                                                            class: QLabel
-                                                                                            name: label_32
-                                                                                            properties:
-                                                                                              minimumSize: 0x20
-                                                                                              maximumSize: 16777215x20
-                                                                                              text: RAPID
-                                                                                              alignment: Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter
-                                                                                              margin: 0
-                                                                                              indent: 40
-                                                                                        - layout:
-                                                                                            class: QHBoxLayout
-                                                                                            name: horizontalLayout_36
-                                                                                            properties:
-                                                                                              spacing: 4
-                                                                                            items:
-                                                                                              - widget:
-                                                                                                  class: ActionButton
-                                                                                                  name: action_rapid_ovr_50
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    toolTip: Set rapid override to 50%
-                                                                                                    text: "50"
-                                                                                                    rapid_over_action*: true
-                                                                                                    float_num*: 50
-                                                                                                    fixedSize: 40x30
-                                                                                              - widget:
-                                                                                                  class: StatusSlider
-                                                                                                  name: slider_rapid_ovr
-                                                                                                  properties:
-                                                                                                    sizePolicy: Preferred/Fixed
-                                                                                                    minimumSize: 100x30
-                                                                                                    maximumSize: 16777215x30
-                                                                                                    toolTip: Adjust rapid rate override
-                                                                                                    maximum: 100
-                                                                                                    singleStep: 1
-                                                                                                    value: 100
-                                                                                                    orientation: Qt::Horizontal
-                                                                                                    tickInterval: 10
-                                                                                                    pin_name*: slider-override-rapid
-                                                                                                    rapid_rate*: true
-                                                                                                    feed_rate*: false
-                                                                                                    jograte_rate*: false
-                                                                                              - widget:
-                                                                                                  class: ActionButton
-                                                                                                  name: action_rapid_ovr_100
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    toolTip: Set rapid override to 100%
-                                                                                                    text: "100"
-                                                                                                    rapid_over_action*: true
-                                                                                                    float_alt_num*: 100
-                                                                                                    fixedSize: 40x30
-                                                                                              - widget:
-                                                                                                  class: StatusLabel
-                                                                                                  name: status_rapid_ovr
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    toolTip: Rapid rate override
-                                                                                                    frameShape: QFrame::WinPanel
-                                                                                                    frameShadow: QFrame::Sunken
-                                                                                                    lineWidth: 1
-                                                                                                    text: 100 %
-                                                                                                    alignment: Qt::AlignCenter
-                                                                                                    textTemplate*: "%d %%"
-                                                                                                    feed_override_status*: false
-                                                                                                    rapid_override_status*: true
-                                                                                                    jograte_status*: false
-                                                                                                    fixedSize: 60x26
-                                                                                              - widget:
-                                                                                                  class: LED
-                                                                                                  name: hal_led_rapid_ovr_selected
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    pin_name*: led-rapid-override
-                                                                                                    diameter: 15
-                                                                                                    color: "#00ff00"
-                                                                                                    off_color*: "#000000"
-                                                                                                    fixedSize: 24x24
-                                                                            - widget:
-                                                                                class: QWidget
-                                                                                name: widget_feed_ovr
-                                                                                native: true
-                                                                                children:
-                                                                                  - layout:
-                                                                                      class: QVBoxLayout
-                                                                                      name: verticalLayout_26
-                                                                                      properties:
-                                                                                        spacing: 0
-                                                                                        margins: 0
-                                                                                      items:
-                                                                                        - widget:
-                                                                                            class: QLabel
-                                                                                            name: label_36
-                                                                                            properties:
-                                                                                              minimumSize: 0x20
-                                                                                              maximumSize: 16777215x20
-                                                                                              text: FEEDRATE
-                                                                                              alignment: Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter
-                                                                                              margin: 0
-                                                                                              indent: 40
-                                                                                        - layout:
-                                                                                            class: QHBoxLayout
-                                                                                            name: horizontalLayout_21
-                                                                                            properties:
-                                                                                              spacing: 4
-                                                                                            items:
-                                                                                              - widget:
-                                                                                                  class: ActionButton
-                                                                                                  name: action_feed_ovr_50
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    toolTip: Set feedrate override to 50%
-                                                                                                    text: "50"
-                                                                                                    feed_over_action*: true
-                                                                                                    float_num*: 50
-                                                                                                    fixedSize: 40x30
-                                                                                              - widget:
-                                                                                                  class: StatusSlider
-                                                                                                  name: slider_feed_ovr
-                                                                                                  properties:
-                                                                                                    sizePolicy: Preferred/Fixed
-                                                                                                    minimumSize: 100x30
-                                                                                                    maximumSize: 16777215x30
-                                                                                                    toolTip: Adjust feed rate override
-                                                                                                    maximum: 120
-                                                                                                    singleStep: 1
-                                                                                                    value: 100
-                                                                                                    orientation: Qt::Horizontal
-                                                                                                    tickInterval: 10
-                                                                                                    pin_name*: slider-override-feed
-                                                                                                    feed_rate*: true
-                                                                                                    jograte_rate*: false
-                                                                                              - widget:
-                                                                                                  class: ActionButton
-                                                                                                  name: action_feed_ovr_100
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    toolTip: Set feedrate override to 100%
-                                                                                                    text: "100"
-                                                                                                    feed_over_action*: true
-                                                                                                    rapid_over_action*: false
-                                                                                                    spindle_over_action*: false
-                                                                                                    float_num*: 100
-                                                                                                    float_alt_num*: 100
-                                                                                                    fixedSize: 40x30
-                                                                                              - widget:
-                                                                                                  class: StatusLabel
-                                                                                                  name: status_feed_ovr
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    toolTip: Feedrate override
-                                                                                                    frameShape: QFrame::WinPanel
-                                                                                                    frameShadow: QFrame::Sunken
-                                                                                                    lineWidth: 1
-                                                                                                    alignment: Qt::AlignCenter
-                                                                                                    textTemplate*: "%d %%"
-                                                                                                    feed_override_status*: true
-                                                                                                    rapid_override_status*: false
-                                                                                                    spindle_override_status*: false
-                                                                                                    jograte_status*: false
-                                                                                                    fixedSize: 60x26
-                                                                                              - widget:
-                                                                                                  class: LED
-                                                                                                  name: hal_led_feedrate_ovr_selected
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    pin_name*: led-feedrate-override
-                                                                                                    diameter: 15
-                                                                                                    color: "#00ff00"
-                                                                                                    off_color*: "#000000"
-                                                                                                    fixedSize: 24x24
-                                                                            - widget:
-                                                                                class: QWidget
-                                                                                name: widget_spindle_ovr
-                                                                                native: true
-                                                                                children:
-                                                                                  - layout:
-                                                                                      class: QVBoxLayout
-                                                                                      name: verticalLayout_14
-                                                                                      properties:
-                                                                                        spacing: 0
-                                                                                        margins: 0
-                                                                                      items:
-                                                                                        - widget:
-                                                                                            class: QLabel
-                                                                                            name: label_37
-                                                                                            properties:
-                                                                                              minimumSize: 0x20
-                                                                                              maximumSize: 16777215x20
-                                                                                              text: SPINDLE
-                                                                                              alignment: Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter
-                                                                                              margin: 0
-                                                                                              indent: 40
-                                                                                        - layout:
-                                                                                            class: QHBoxLayout
-                                                                                            name: horizontalLayout_57
-                                                                                            properties:
-                                                                                              spacing: 4
-                                                                                            items:
-                                                                                              - widget:
-                                                                                                  class: ActionButton
-                                                                                                  name: action_spindle_ovr_50
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    toolTip: Set spindle override to 50%
-                                                                                                    text: "50"
-                                                                                                    spindle_over_action*: true
-                                                                                                    float_num*: 50
-                                                                                                    fixedSize: 40x30
-                                                                                              - widget:
-                                                                                                  class: StatusSlider
-                                                                                                  name: slider_spindle_ovr
-                                                                                                  properties:
-                                                                                                    sizePolicy: Preferred/Fixed
-                                                                                                    minimumSize: 100x30
-                                                                                                    maximumSize: 16777215x30
-                                                                                                    toolTip: Adjust spindle override
-                                                                                                    minimum: 50
-                                                                                                    maximum: 120
-                                                                                                    singleStep: 1
-                                                                                                    value: 100
-                                                                                                    orientation: Qt::Horizontal
-                                                                                                    tickPosition: QSlider::NoTicks
-                                                                                                    tickInterval: 10
-                                                                                                    pin_name*: slider-override-spindle
-                                                                                                    rapid_rate*: false
-                                                                                                    feed_rate*: false
-                                                                                                    spindle_rate*: true
-                                                                                                    jograte_rate*: false
-                                                                                              - widget:
-                                                                                                  class: ActionButton
-                                                                                                  name: action_spindle_ovr_100
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    toolTip: Set spindle override to 100%
-                                                                                                    text: "100"
-                                                                                                    rapid_over_action*: false
-                                                                                                    spindle_over_action*: true
-                                                                                                    float_alt_num*: 100
-                                                                                                    fixedSize: 40x30
-                                                                                              - widget:
-                                                                                                  class: StatusLabel
-                                                                                                  name: status_spindle_ovr
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    toolTip: Spindle speed override
-                                                                                                    frameShape: QFrame::WinPanel
-                                                                                                    frameShadow: QFrame::Sunken
-                                                                                                    lineWidth: 1
-                                                                                                    alignment: Qt::AlignCenter
-                                                                                                    textTemplate*: "%d %%"
-                                                                                                    feed_override_status*: false
-                                                                                                    rapid_override_status*: false
-                                                                                                    spindle_override_status*: true
-                                                                                                    jograte_status*: false
-                                                                                                    fixedSize: 60x26
-                                                                                              - widget:
-                                                                                                  class: LED
-                                                                                                  name: hal_led_spindle_ovr_selected
-                                                                                                  properties:
-                                                                                                    sizePolicy: Fixed/Fixed
-                                                                                                    pin_name*: led-spindle-override
-                                                                                                    diameter: 15
-                                                                                                    color: "#00ff00"
-                                                                                                    off_color*: "#000000"
-                                                                                                    fixedSize: 24x24
+                                                                            - override_slider:
+                                                                                widget: widget_max_ovr
+                                                                                vlayout: verticalLayout_40
+                                                                                hlayout: horizontalLayout_39
+                                                                                label:
+                                                                                  name: label_28
+                                                                                  text: MAX VELOCITY
+                                                                                btn50:
+                                                                                  name: btn_maxv_ovr_50
+                                                                                slider:
+                                                                                  name: slider_maxv_ovr
+                                                                                  toolTip: Adjust max velocity override
+                                                                                  maximum: 3600
+                                                                                  singleStep: 10
+                                                                                  pageStep: 100
+                                                                                  value: 3600
+                                                                                  pin_name*: slider-override-maxv
+                                                                                  rapid_rate*: false
+                                                                                  max_velocity_rate*: true
+                                                                                btn100:
+                                                                                  name: btn_maxv_ovr_100
+                                                                                status:
+                                                                                  class: QLineEdit
+                                                                                  name: lbl_maxv_percent
+                                                                                  text: 100 %
+                                                                                led:
+                                                                                  name: hal_led_maxv_ovr_selected
+                                                                                  pin_name*: led-maxv-override
+                                                                            - override_slider:
+                                                                                widget: widget_rapid_ovr
+                                                                                vlayout: verticalLayout_4
+                                                                                hlayout: horizontalLayout_36
+                                                                                label:
+                                                                                  name: label_32
+                                                                                  text: RAPID
+                                                                                btn50:
+                                                                                  class: ActionButton
+                                                                                  name: action_rapid_ovr_50
+                                                                                  toolTip: Set rapid override to 50%
+                                                                                  rapid_over_action*: true
+                                                                                  float_num*: 50
+                                                                                slider:
+                                                                                  name: slider_rapid_ovr
+                                                                                  toolTip: Adjust rapid rate override
+                                                                                  maximum: 100
+                                                                                  singleStep: 1
+                                                                                  value: 100
+                                                                                  pin_name*: slider-override-rapid
+                                                                                  rapid_rate*: true
+                                                                                  feed_rate*: false
+                                                                                  jograte_rate*: false
+                                                                                btn100:
+                                                                                  class: ActionButton
+                                                                                  name: action_rapid_ovr_100
+                                                                                  toolTip: Set rapid override to 100%
+                                                                                  rapid_over_action*: true
+                                                                                  float_alt_num*: 100
+                                                                                status:
+                                                                                  class: StatusLabel
+                                                                                  name: status_rapid_ovr
+                                                                                  toolTip: Rapid rate override
+                                                                                  text: 100 %
+                                                                                  textTemplate*: "%d %%"
+                                                                                  feed_override_status*: false
+                                                                                  rapid_override_status*: true
+                                                                                  jograte_status*: false
+                                                                                led:
+                                                                                  name: hal_led_rapid_ovr_selected
+                                                                                  pin_name*: led-rapid-override
+                                                                            - override_slider:
+                                                                                widget: widget_feed_ovr
+                                                                                vlayout: verticalLayout_26
+                                                                                hlayout: horizontalLayout_21
+                                                                                label:
+                                                                                  name: label_36
+                                                                                  text: FEEDRATE
+                                                                                btn50:
+                                                                                  class: ActionButton
+                                                                                  name: action_feed_ovr_50
+                                                                                  toolTip: Set feedrate override to 50%
+                                                                                  feed_over_action*: true
+                                                                                  float_num*: 50
+                                                                                slider:
+                                                                                  name: slider_feed_ovr
+                                                                                  toolTip: Adjust feed rate override
+                                                                                  maximum: 120
+                                                                                  singleStep: 1
+                                                                                  value: 100
+                                                                                  pin_name*: slider-override-feed
+                                                                                  feed_rate*: true
+                                                                                  jograte_rate*: false
+                                                                                btn100:
+                                                                                  class: ActionButton
+                                                                                  name: action_feed_ovr_100
+                                                                                  toolTip: Set feedrate override to 100%
+                                                                                  feed_over_action*: true
+                                                                                  rapid_over_action*: false
+                                                                                  spindle_over_action*: false
+                                                                                  float_num*: 100
+                                                                                  float_alt_num*: 100
+                                                                                status:
+                                                                                  class: StatusLabel
+                                                                                  name: status_feed_ovr
+                                                                                  toolTip: Feedrate override
+                                                                                  textTemplate*: "%d %%"
+                                                                                  feed_override_status*: true
+                                                                                  rapid_override_status*: false
+                                                                                  spindle_override_status*: false
+                                                                                  jograte_status*: false
+                                                                                led:
+                                                                                  name: hal_led_feedrate_ovr_selected
+                                                                                  pin_name*: led-feedrate-override
+                                                                            - override_slider:
+                                                                                widget: widget_spindle_ovr
+                                                                                vlayout: verticalLayout_14
+                                                                                hlayout: horizontalLayout_57
+                                                                                label:
+                                                                                  name: label_37
+                                                                                  text: SPINDLE
+                                                                                btn50:
+                                                                                  class: ActionButton
+                                                                                  name: action_spindle_ovr_50
+                                                                                  toolTip: Set spindle override to 50%
+                                                                                  spindle_over_action*: true
+                                                                                  float_num*: 50
+                                                                                slider:
+                                                                                  name: slider_spindle_ovr
+                                                                                  toolTip: Adjust spindle override
+                                                                                  minimum: 50
+                                                                                  maximum: 120
+                                                                                  singleStep: 1
+                                                                                  value: 100
+                                                                                  tickPosition: QSlider::NoTicks
+                                                                                  pin_name*: slider-override-spindle
+                                                                                  rapid_rate*: false
+                                                                                  feed_rate*: false
+                                                                                  spindle_rate*: true
+                                                                                  jograte_rate*: false
+                                                                                btn100:
+                                                                                  class: ActionButton
+                                                                                  name: action_spindle_ovr_100
+                                                                                  toolTip: Set spindle override to 100%
+                                                                                  rapid_over_action*: false
+                                                                                  spindle_over_action*: true
+                                                                                  float_alt_num*: 100
+                                                                                status:
+                                                                                  class: StatusLabel
+                                                                                  name: status_spindle_ovr
+                                                                                  toolTip: Spindle speed override
+                                                                                  textTemplate*: "%d %%"
+                                                                                  feed_override_status*: false
+                                                                                  rapid_override_status*: false
+                                                                                  spindle_override_status*: true
+                                                                                  jograte_status*: false
+                                                                                led:
+                                                                                  name: hal_led_spindle_ovr_selected
+                                                                                  pin_name*: led-spindle-override
                                                                 - widget:
                                                                     class: QGroupBox
                                                                     name: frame_speeds
