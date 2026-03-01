@@ -380,7 +380,11 @@ def process_layout_item(item_elem):
         if macro is not None:
             item["override_slider"] = macro
         else:
-            item["widget"] = widget_data
+            macro = _detect_jog_slider(widget_data)
+            if macro is not None:
+                item["jog_slider"] = macro
+            else:
+                item["widget"] = widget_data
     elif layout is not None:
         item["layout"] = process_layout(layout)
     elif spacer is not None:
@@ -588,6 +592,128 @@ def _detect_override_slider(widget_data):
     led_macro = {'name': w_led.get('name', '')}
     led_macro.update(led_stripped)
     macro['led'] = led_macro
+
+    return macro
+
+
+# ── Jog slider macro detection ──────────────────────────────────────────
+
+# Structural defaults that get stripped when compacting to jog_slider.
+# Must match the expansion defaults in yaml2ui.py.
+
+_JOG_SLIDER_DEFAULTS = {
+    'vlayout': {
+        'spacing': 8,
+        'margins': [0, 0, 0, 5],
+    },
+    'label': {
+        'sizePolicy': 'Preferred/Fixed',
+        'minimumSize': '60x30',
+        'maximumSize': '58x30',
+        'font': '10pt',
+        'alignment': 'Qt::AlignCenter',
+    },
+    'status': {
+        'sizePolicy': 'Fixed/Fixed',
+        'frameShape': 'QFrame::WinPanel',
+        'frameShadow': 'QFrame::Sunken',
+        'alignment': 'Qt::AlignCenter',
+        'fixedSize': '58x30',
+    },
+    'slider': {
+        'minimumSize': '58x0',
+        'maximumSize': '58x16777215',
+        'maximum': 3600,
+        'singleStep': 100,
+        'pageStep': 100,
+        'value': 3000,
+        'orientation': 'Qt::Vertical',
+    },
+    'button': {
+        'sizePolicy': 'Fixed/Fixed',
+        'text': 'FAST',
+        'checkable': True,
+        'checked_state_text_option*': True,
+        'true_state_string*': 'SLOW',
+        'false_state_string*': 'FAST',
+        'fixedSize': '58x40',
+    },
+}
+
+
+def _detect_jog_slider(widget_data):
+    """Check if a widget matches the jog_slider pattern.
+
+    Pattern: QWidget(native) > QVBoxLayout(4 items) >
+             QLabel + StatusLabel + StatusSlider + IndicatedPushButton
+
+    Returns a compact macro dict or None.
+    """
+    if widget_data.get('class') != 'QWidget' or not widget_data.get('native'):
+        return None
+
+    children = widget_data.get('children', [])
+    if len(children) != 1 or 'layout' not in children[0]:
+        return None
+
+    vlayout = children[0]['layout']
+    if vlayout.get('class') != 'QVBoxLayout':
+        return None
+
+    items = vlayout.get('items', [])
+    if len(items) != 4:
+        return None
+
+    # Check that all 4 items contain widgets
+    if any('widget' not in it for it in items):
+        return None
+
+    w_label = items[0]['widget']
+    w_status = items[1]['widget']
+    w_slider = items[2]['widget']
+    w_button = items[3]['widget']
+
+    if w_label.get('class') != 'QLabel':
+        return None
+    if w_status.get('class') != 'StatusLabel':
+        return None
+    if w_slider.get('class') != 'StatusSlider':
+        return None
+    if w_button.get('class') != 'IndicatedPushButton':
+        return None
+
+    # Verify VBoxLayout properties match defaults
+    vlayout_props = vlayout.get('properties', {})
+    if vlayout_props.get('spacing') != 8:
+        return None
+    margins = vlayout_props.get('margins')
+    if margins != [0, 0, 0, 5]:
+        return None
+
+    # Build the macro dict
+    macro = {}
+    macro['widget'] = widget_data.get('name', '')
+    macro['vlayout'] = vlayout.get('name', '')
+
+    def _build_sub_block(widget, defaults_key, items_entry):
+        """Build a sub-block dict, stripping defaults and capturing item_alignment."""
+        props = widget.get('properties', {})
+        stripped = _strip_defaults(props, _JOG_SLIDER_DEFAULTS[defaults_key])
+        block = {'name': widget.get('name', '')}
+        # Capture item-level alignment
+        alignment = items_entry.get('alignment')
+        if alignment:
+            block['item_alignment'] = alignment
+        # Put text first for readability if present
+        if 'text' in stripped:
+            block['text'] = stripped.pop('text')
+        block.update(stripped)
+        return block
+
+    macro['label'] = _build_sub_block(w_label, 'label', items[0])
+    macro['status'] = _build_sub_block(w_status, 'status', items[1])
+    macro['slider'] = _build_sub_block(w_slider, 'slider', items[2])
+    macro['button'] = _build_sub_block(w_button, 'button', items[3])
 
     return macro
 
@@ -923,6 +1049,12 @@ def verify(ui_path, yaml_data):
     override_count = count_yaml_key(yaml_data, "override_slider")
     yaml_widgets += override_count * 6
     yaml_layouts += override_count * 2
+    # Each jog_slider macro replaces 5 widgets and 1 layout.
+    # The macro dict has a 'widget' key (name string) that gets counted,
+    # so the net widget adjustment is 4 (5 replaced minus 1 counted).
+    jog_count = count_yaml_key(yaml_data, "jog_slider")
+    yaml_widgets += jog_count * 4
+    yaml_layouts += jog_count * 1
     yaml_connections = len(yaml_data.get("connections", []))
     yaml_custom_widgets = len(yaml_data.get("customwidgets", []))
 

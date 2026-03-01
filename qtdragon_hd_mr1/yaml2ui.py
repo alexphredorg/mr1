@@ -1034,6 +1034,129 @@ def _expand_override_slider(macro):
     }
 
 
+# ── Jog slider macro expansion ──────────────────────────────────────────
+
+# Structural defaults for each jog_slider component.
+# Pattern: QWidget(native) > QVBoxLayout > QLabel + StatusLabel + StatusSlider + IndicatedPushButton
+
+_JOG_SLIDER_DEFAULTS = {
+    'vlayout': {
+        'spacing': 8,
+        'margins': [0, 0, 0, 5],
+    },
+    'label': {
+        'sizePolicy': 'Preferred/Fixed',
+        'minimumSize': '60x30',
+        'maximumSize': '58x30',
+        'font': '10pt',
+        'alignment': 'Qt::AlignCenter',
+    },
+    'status': {
+        'sizePolicy': 'Fixed/Fixed',
+        'frameShape': 'QFrame::WinPanel',
+        'frameShadow': 'QFrame::Sunken',
+        'alignment': 'Qt::AlignCenter',
+        'fixedSize': '58x30',
+    },
+    'slider': {
+        'minimumSize': '58x0',
+        'maximumSize': '58x16777215',
+        'maximum': 3600,
+        'singleStep': 100,
+        'pageStep': 100,
+        'value': 3000,
+        'orientation': 'Qt::Vertical',
+    },
+    'button': {
+        'sizePolicy': 'Fixed/Fixed',
+        'text': 'FAST',
+        'checkable': True,
+        'checked_state_text_option*': True,
+        'true_state_string*': 'SLOW',
+        'false_state_string*': 'FAST',
+        'fixedSize': '58x40',
+    },
+}
+
+
+def _expand_jog_slider(macro):
+    """Expand a jog_slider macro dict into a full widget dict."""
+
+    def _merge_props(defaults_key, user_block):
+        """Build properties dict: start with defaults, overlay user keys."""
+        props = dict(_JOG_SLIDER_DEFAULTS.get(defaults_key, {}))
+        for k, v in user_block.items():
+            if k in ('class', 'name', 'item_alignment'):
+                continue
+            props[k] = v
+        return props
+
+    def _make_item(widget_data, user_block):
+        """Build a layout item, adding alignment attribute if specified."""
+        item = {}
+        alignment = user_block.get('item_alignment')
+        if alignment:
+            item['alignment'] = alignment
+        item['widget'] = widget_data
+        return item
+
+    # Label
+    label_block = macro.get('label', {})
+    label_widget = {
+        'class': 'QLabel',
+        'name': label_block.get('name', ''),
+        'properties': _merge_props('label', label_block),
+    }
+
+    # Status (StatusLabel)
+    status_block = macro.get('status', {})
+    status_widget = {
+        'class': status_block.get('class', 'StatusLabel'),
+        'name': status_block.get('name', ''),
+        'properties': _merge_props('status', status_block),
+    }
+
+    # Slider (StatusSlider)
+    slider_block = macro.get('slider', {})
+    slider_widget = {
+        'class': slider_block.get('class', 'StatusSlider'),
+        'name': slider_block.get('name', ''),
+        'properties': _merge_props('slider', slider_block),
+    }
+
+    # Button (IndicatedPushButton)
+    button_block = macro.get('button', {})
+    button_widget = {
+        'class': button_block.get('class', 'IndicatedPushButton'),
+        'name': button_block.get('name', ''),
+        'properties': _merge_props('button', button_block),
+    }
+
+    # VBoxLayout with 4 items
+    vlayout_props = dict(_JOG_SLIDER_DEFAULTS['vlayout'])
+    vlayout = {
+        'class': 'QVBoxLayout',
+        'name': macro.get('vlayout', ''),
+        'properties': vlayout_props,
+        'items': [
+            _make_item(label_widget, label_block),
+            _make_item(status_widget, status_block),
+            _make_item(slider_widget, slider_block),
+            _make_item(button_widget, button_block),
+        ],
+    }
+
+    # Outer QWidget
+    return {
+        'class': 'QWidget',
+        'name': macro.get('widget', ''),
+        'native': True,
+        'children': [
+            {'layout': vlayout},
+        ],
+    }
+
+
 def _expand_macros(data):
     """Recursively expand all macros in the parsed YAML tree in-place."""
     widget = data.get('widget')
@@ -1059,6 +1182,15 @@ def _expand_macros_in_layout(layout_data):
             macro = item['override_slider']
             expanded = _expand_override_slider(macro)
             # Preserve grid/alignment attributes from the layout item
+            new_item = {}
+            for k in ('row', 'column', 'rowspan', 'colspan', 'alignment'):
+                if k in item:
+                    new_item[k] = item[k]
+            new_item['widget'] = expanded
+            items[i] = new_item
+        elif 'jog_slider' in item:
+            macro = item['jog_slider']
+            expanded = _expand_jog_slider(macro)
             new_item = {}
             for k in ('row', 'column', 'rowspan', 'colspan', 'alignment'):
                 if k in item:

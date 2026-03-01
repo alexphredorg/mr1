@@ -4620,139 +4620,57 @@ widget:
                                                                       joint_number*: 3
                                                                       axis_letter*: A
                                                                       fixedSize: 50x50
-                                                    - widget:
-                                                        class: QWidget
-                                                        name: widget_jog_linear
-                                                        native: true
-                                                        children:
-                                                          - layout:
-                                                              class: QVBoxLayout
-                                                              name: verticalLayout_23
-                                                              properties:
-                                                                spacing: 8
-                                                                margins: [0, 0, 0, 5]
-                                                              items:
-                                                                - alignment: Qt::AlignHCenter
-                                                                  widget:
-                                                                    class: QLabel
-                                                                    name: lbl_jog_linear
-                                                                    properties:
-                                                                      sizePolicy: Preferred/Fixed
-                                                                      minimumSize: 60x30
-                                                                      maximumSize: 58x30
-                                                                      font: 10pt
-                                                                      text: "JOG\nLINEAR"
-                                                                      alignment: Qt::AlignCenter
-                                                                - alignment: Qt::AlignHCenter
-                                                                  widget:
-                                                                    class: StatusLabel
-                                                                    name: status_jog_linear
-                                                                    properties:
-                                                                      sizePolicy: Fixed/Fixed
-                                                                      frameShape: QFrame::WinPanel
-                                                                      frameShadow: QFrame::Sunken
-                                                                      alignment: Qt::AlignCenter
-                                                                      textTemplate*: "%.1f"
-                                                                      alt_textTemplate*: "%d"
-                                                                      jograte_status*: true
-                                                                      fixedSize: 58x30
-                                                                - alignment: Qt::AlignHCenter
-                                                                  widget:
-                                                                    class: StatusSlider
-                                                                    name: slider_jog_linear
-                                                                    properties:
-                                                                      minimumSize: 58x0
-                                                                      maximumSize: 58x16777215
-                                                                      toolTip: Adjust linear jog rate
-                                                                      maximum: 3600
-                                                                      singleStep: 100
-                                                                      pageStep: 100
-                                                                      value: 3000
-                                                                      orientation: Qt::Vertical
-                                                                      tickPosition: QSlider::TicksBelow
-                                                                      tickInterval: 200
-                                                                      pin_name*: slider-jogspeed-linear
-                                                                      jograte_rate*: true
-                                                                - alignment: Qt::AlignHCenter
-                                                                  widget:
-                                                                    class: IndicatedPushButton
-                                                                    name: btn_jog_l_slow
-                                                                    properties:
-                                                                      sizePolicy: Fixed/Fixed
-                                                                      toolTip: Toggle linear jog speed range
-                                                                      text: FAST
-                                                                      checkable: true
-                                                                      checked_state_text_option*: true
-                                                                      true_state_string*: SLOW
-                                                                      false_state_string*: FAST
-                                                                      slider*: slider_jog_linear
-                                                                      fixedSize: 58x40
-                                                    - widget:
-                                                        class: QWidget
-                                                        name: widget_jog_angular
-                                                        native: true
-                                                        children:
-                                                          - layout:
-                                                              class: QVBoxLayout
-                                                              name: verticalLayout_11
-                                                              properties:
-                                                                spacing: 8
-                                                                margins: [0, 0, 0, 5]
-                                                              items:
-                                                                - widget:
-                                                                    class: QLabel
-                                                                    name: lbl_jog_angular
-                                                                    properties:
-                                                                      sizePolicy: Preferred/Fixed
-                                                                      minimumSize: 60x30
-                                                                      maximumSize: 58x30
-                                                                      font: 10pt
-                                                                      text: "JOG\nANGULAR"
-                                                                      alignment: Qt::AlignCenter
-                                                                - alignment: Qt::AlignHCenter
-                                                                  widget:
-                                                                    class: StatusLabel
-                                                                    name: status_jog_angular
-                                                                    properties:
-                                                                      sizePolicy: Fixed/Fixed
-                                                                      font: 8pt
-                                                                      frameShape: QFrame::WinPanel
-                                                                      frameShadow: QFrame::Sunken
-                                                                      alignment: Qt::AlignCenter
-                                                                      textTemplate*: "%d"
-                                                                      jograte_status*: false
-                                                                      jograte_angular_status*: true
-                                                                      fixedSize: 58x30
-                                                                - widget:
-                                                                    class: StatusSlider
-                                                                    name: slider_jog_angular
-                                                                    properties:
-                                                                      minimumSize: 58x0
-                                                                      maximumSize: 58x16777215
-                                                                      font: 8pt
-                                                                      toolTip: Adjust angular jog rate
-                                                                      maximum: 3600
-                                                                      singleStep: 100
-                                                                      pageStep: 100
-                                                                      value: 3000
-                                                                      orientation: Qt::Vertical
-                                                                      pin_name*: slider-jogspeed-angular
-                                                                      jograte_rate*: false
-                                                                      jograte_angular_rate*: true
-                                                                - widget:
-                                                                    class: IndicatedPushButton
-                                                                    name: btn_jog_a_slow
-                                                                    properties:
-                                                                      sizePolicy: Fixed/Fixed
-                                                                      font: 8pt
-                                                                      toolTip: Toggle angular jog speed range
-                                                                      text: FAST
-                                                                      checkable: true
-                                                                      checked_state_text_option*: true
-                                                                      true_state_string*: SLOW
-                                                                      false_state_string*: FAST
-                                                                      slider*: slider_jog_angular
-                                                                      fixedSize: 58x40
+                                                    - jog_slider:
+                                                        widget: widget_jog_linear
+                                                        vlayout: verticalLayout_23
+                                                        label:
+                                                          name: lbl_jog_linear
+                                                          item_alignment: Qt::AlignHCenter
+                                                          text: "JOG\nLINEAR"
+                                                        status:
+                                                          name: status_jog_linear
+                                                          item_alignment: Qt::AlignHCenter
+                                                          textTemplate*: "%.1f"
+                                                          alt_textTemplate*: "%d"
+                                                          jograte_status*: true
+                                                        slider:
+                                                          name: slider_jog_linear
+                                                          item_alignment: Qt::AlignHCenter
+                                                          toolTip: Adjust linear jog rate
+                                                          tickPosition: QSlider::TicksBelow
+                                                          tickInterval: 200
+                                                          pin_name*: slider-jogspeed-linear
+                                                          jograte_rate*: true
+                                                        button:
+                                                          name: btn_jog_l_slow
+                                                          item_alignment: Qt::AlignHCenter
+                                                          toolTip: Toggle linear jog speed range
+                                                          slider*: slider_jog_linear
+                                                    - jog_slider:
+                                                        widget: widget_jog_angular
+                                                        vlayout: verticalLayout_11
+                                                        label:
+                                                          name: lbl_jog_angular
+                                                          text: "JOG\nANGULAR"
+                                                        status:
+                                                          name: status_jog_angular
+                                                          item_alignment: Qt::AlignHCenter
+                                                          font: 8pt
+                                                          textTemplate*: "%d"
+                                                          jograte_status*: false
+                                                          jograte_angular_status*: true
+                                                        slider:
+                                                          name: slider_jog_angular
+                                                          font: 8pt
+                                                          toolTip: Adjust angular jog rate
+                                                          pin_name*: slider-jogspeed-angular
+                                                          jograte_rate*: false
+                                                          jograte_angular_rate*: true
+                                                        button:
+                                                          name: btn_jog_a_slow
+                                                          font: 8pt
+                                                          toolTip: Toggle angular jog speed range
+                                                          slider*: slider_jog_angular
                                               - widget:
                                                   class: QWidget
                                                   name: widget_increments_linear

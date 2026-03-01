@@ -3485,7 +3485,7 @@ View</string>
                              </size>
                             </property>
                             <property name="text">
-                             <string>EOFFSET LTD</string>
+                             <string>SOFT LIMITS</string>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
